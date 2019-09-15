@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Movie Catalogue</string>
+    <string name="description">Deskripsi</string>
+    <string name="genre_ids">Genre</string>
+    <string name="language">Bahasa</string>
+    <string name="language_setting">Pengaturan Bahasa</string>
+    <string name="rating">Penilaian</string>
+    <string name="release_date">Tanggal Rilis</string>
+    <string name="tab1_Movies">Film</string>
+    <string name="tab2_TVShows">Acara TV</string>
+    <string name="title_movie_actionbar">Detail Film</string>
+    <string name="title_tvshow_actionbar">Detail Acara TV</string>
+    <string name="network_error_message">Jaringan tidak tersedia atau server down!</string>
+</resources>

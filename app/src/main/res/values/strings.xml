@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Movie Catalogue</string>
+    <string name="tab1_Movies">Movies</string>
+    <string name="tab2_TVShows">TV Shows</string>
+    <string name="dummy_rating" translatable="false">0%</string>
+    <string name="rating">Rating</string>
+    <string name="release_date">Release Date</string>
+    <string name="dummy_movie_description" translatable="false">This movie is ....</string>
+    <string name="description">Description</string>
+    <string name="genre_ids">Genres</string>
+    <string name="dummy_genres" translatable="false"><![CDATA[Action, Sci-Fi & Fantasy, Adventure]]></string>
+    <string name="dummy_release_date" translatable="false">August 20, 2019</string>
+    <string name="dummy_title" translatable="false">Aquaman</string>
+    <string name="dummy_tvshow_description" translatable="false">This TV show is ....</string>
+    <string name="language_setting">Language Setting</string>
+    <string name="language">Language</string>
+    <string name="rbtn_indonesia" translatable="false">Bahasa Indonesia</string>
+    <string name="rbtn_english" translatable="false">English</string>
+    <string name="title_movie_actionbar">Movie Details</string>
+    <string name="title_tvshow_actionbar">TV Show Details</string>
+    <string name="network_error_message">Network is unavailable or server down!</string>
+</resources>

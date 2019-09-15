@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/activity_general_margin">
+
+    <ImageView
+        android:id="@+id/img_tvshow_poster"
+        android:layout_width="125dp"
+        android:layout_height="175dp" />
+
+    <TextView
+        android:id="@+id/tv_tvshow_title"
+        style="@style/ItemTextViewStyle"
+        android:layout_marginBottom="16dp"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_release_date"
+        style="@style/ItemTextViewStyle"
+        android:layout_below="@id/tv_tvshow_title"
+        android:text="@string/release_date"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_tvshow_release_date_value"
+        style="@style/ItemTextViewStyle"
+        android:textSize="12sp"
+        android:layout_below="@id/tv_release_date"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tv_rating"
+        style="@style/ItemTextViewStyle"
+        android:layout_marginBottom="4dp"
+        android:layout_below="@id/tv_tvshow_release_date_value"
+        android:text="@string/rating"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/pb_tv_show_rating"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_below="@id/tv_rating"
+        android:layout_toEndOf="@id/img_tvshow_poster"
+        android:layout_marginBottom="8dp"
+        android:progressDrawable="@drawable/progress_custom"
+        android:progress="0"
+        android:progressBackgroundTint="#DAD5D5" />
+
+    <TextView
+        android:id="@+id/tv_tvshow_pb_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/pb_tv_show_rating"
+        android:layout_alignBottom="@id/pb_tv_show_rating"
+        android:layout_marginStart="8dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/dummy_rating"
+        android:textSize="12sp"
+        android:textStyle="bold|italic" />
+
+</RelativeLayout>
