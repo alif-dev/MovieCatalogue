@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.moviecatalogue.R;
-import com.example.moviecatalogue.repository.model.Movie;
+import com.example.moviecatalogue.repository.model.MovieResult;
 
 import java.util.Locale;
 
@@ -55,18 +55,20 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tv_dtl_movie_description_value);
         tvGenres = findViewById(R.id.tv_dtl_movie_genres_value);
 
-        Movie movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
-        tvTitle.setText(movie.getTitle());
-        Glide.with(this)
-                .load("http://image.tmdb.org/t/p/w342" + movie.getPoster())
-                .into(imgPoster);
-        tvReleaseDate.setText(formatDateToLocal(movie.getRelease_date()));
-        setRatingProgressBar(movie);
-        tvDescription.setText(movie.getDescription());
-        tvGenres.setText(convertGenreIdsToAStringOfNames(movie.getGenre_ids()));
+        MovieResult movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
+        if (movie != null) {
+            tvTitle.setText(movie.getOriginalTitle());
+            Glide.with(this)
+                    .load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath())
+                    .into(imgPoster);
+            tvReleaseDate.setText(formatDateToLocal(movie.getReleaseDate()));
+            setRatingProgressBar(movie);
+            tvDescription.setText(movie.getOverview());
+            tvGenres.setText(convertGenreIdsToAStringOfNames(movie.getGenreIds()));
+        }
     }
 
-    private void setRatingProgressBar(Movie movie) {
+    private void setRatingProgressBar(MovieResult movie) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -74,7 +76,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = Float.parseFloat(movie.getRating()) * 10;
+        float rating = movie.getVoteAverage() * 10;
         if (rating >= 0 && rating <= 20) {
             setRatingProgressBarAnimation(red, (int) rating);
         } else if (rating > 20 && rating <= 40) {

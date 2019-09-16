@@ -17,10 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.moviecatalogue.R;
-import com.example.moviecatalogue.repository.model.TVShow;
+import com.example.moviecatalogue.repository.model.TVShowResult;
 
 import java.util.Locale;
 
+import static com.example.moviecatalogue.view.utility.DateFormatter.formatDateToLocal;
+import static com.example.moviecatalogue.view.utility.GenreConverter.convertGenreIdsToAStringOfNames;
+
+@SuppressWarnings("FieldCanBeLocal")
 public class TVShowDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private ImageView imgPoster;
@@ -50,18 +54,20 @@ public class TVShowDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tv_dtl_tvshow_description_value);
         tvGenres = findViewById(R.id.tv_dtl_tvshow_genres_value);
 
-        TVShow tvShow = getIntent().getParcelableExtra(TVSHOW_DATA_KEY);
-        tvTitle.setText(tvShow.getTitle());
-        Glide.with(this)
-                .load(tvShow.getPoster())
-                .into(imgPoster);
-        tvReleaseDate.setText(tvShow.getRelease_date());
-        setRatingProgressBar(tvShow);
-        tvDescription.setText(tvShow.getDescription());
-        tvGenres.setText(tvShow.getGenres());
+        TVShowResult tvShow = getIntent().getParcelableExtra(TVSHOW_DATA_KEY);
+        if (tvShow != null) {
+            tvTitle.setText(tvShow.getOriginalName());
+            Glide.with(this)
+                    .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
+                    .into(imgPoster);
+            tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
+            setRatingProgressBar(tvShow);
+            tvDescription.setText(tvShow.getOverview());
+            tvGenres.setText(convertGenreIdsToAStringOfNames(tvShow.getGenreIds()));
+        }
     }
 
-    private void setRatingProgressBar(TVShow tvShow) {
+    private void setRatingProgressBar(TVShowResult tvShow) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -69,7 +75,7 @@ public class TVShowDetailActivity extends AppCompatActivity {
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = Float.parseFloat(tvShow.getRating()) * 10;
+        float rating = tvShow.getVoteAverage() * 10;
         if (rating >= 0 && rating <= 20) {
             setRatingProgressBarAnimation(red, (int) rating);
         } else if (rating > 20 && rating <= 40) {

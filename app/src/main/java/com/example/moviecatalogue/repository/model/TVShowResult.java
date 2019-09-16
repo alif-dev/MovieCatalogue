@@ -18,7 +18,7 @@ public class TVShowResult implements Parcelable {
     @SerializedName("popularity")
     private float popularity;
     @SerializedName("origin_country")
-    private List<Integer> originCountry;
+    private List<String> originCountry;
     @SerializedName("vote_count")
     private int voteCount;
     @SerializedName("first_air_date")
@@ -47,7 +47,7 @@ public class TVShowResult implements Parcelable {
         name = in.readString();
         popularity = in.readFloat();
         originCountry = new ArrayList<>();
-        in.readList(originCountry, Integer.class.getClassLoader());
+        in.readList(originCountry, String.class.getClassLoader());
         voteCount = in.readInt();
         firstAirDate = in.readString();
         backdropPath = in.readString();
@@ -102,11 +102,11 @@ public class TVShowResult implements Parcelable {
         this.popularity = popularity;
     }
 
-    public List<Integer> getOriginCountry() {
+    public List<String> getOriginCountry() {
         return originCountry;
     }
 
-    public void setOriginCountry(List<Integer> originCountry) {
+    public void setOriginCountry(List<String> originCountry) {
         this.originCountry = originCountry;
     }
 

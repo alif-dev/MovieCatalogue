@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviecatalogue.R;
-import com.example.moviecatalogue.repository.model.Movie;
 import com.example.moviecatalogue.repository.model.MovieResult;
 import com.example.moviecatalogue.view.adapter.MovieItemAdapter;
 import com.example.moviecatalogue.viewmodel.MovieViewModel;
@@ -92,7 +91,7 @@ public class MoviesFragment extends Fragment {
         movieItemAdapter.notifyDataSetChanged();
         movieItemAdapter.setOnItemClickCallBack(new MovieItemAdapter.OnItemClickCallback() {
             @Override
-            public void onItemClicked(Movie movie) {
+            public void onItemClicked(MovieResult movie) {
                 Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
                 intent.putExtra(MovieDetailActivity.MOVIE_DATA_KEY, movie);
                 startActivity(intent);

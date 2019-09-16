@@ -28,8 +28,7 @@ public class MovieViewModel extends ViewModel {
     }
 
     public void setMovies() {
-        // String url = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=en-US";
-        // final ArrayList<MovieResponse> movieList = new ArrayList<>();
+        // the url is "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language=" + LANGUAGE
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
         Call<MovieResponse> call = apiService.getMoviesInformation(API_KEY, LANGUAGE);
 
@@ -43,7 +42,6 @@ public class MovieViewModel extends ViewModel {
                         // a MovieResult object contains information of a movie
                         movies.postValue(response.body().getMovieResults());
                         dataRetrieved = "success";
-                        //Log.d("movieResult: ", response.body().getMovieResults().get(0).getOriginalTitle());
                     }
                 }
             }
@@ -54,32 +52,5 @@ public class MovieViewModel extends ViewModel {
                 dataRetrieved = "failed";
             }
         });
-
-        /*AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                try {
-                    String result = new String(responseBody);
-                    JSONObject responseObject = new JSONObject(result);
-                    JSONArray list = responseObject.getJSONArray("results");
-                    for (int i = 0; i < list.length(); i++) {
-                        JSONObject movie = list.getJSONObject(i);
-                        Movie movieItems = new Movie(movie);
-                        movieList.add(movieItems);
-                    }
-                    movies.postValue(movieList);
-                    dataRetrieved = "success";
-                } catch (Exception e) {
-                    Log.d("Exception", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("onFailure", error.getMessage());
-                dataRetrieved = "failed";
-            }
-        });*/
     }
 }

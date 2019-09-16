@@ -15,24 +15,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.moviecatalogue.R;
-import com.example.moviecatalogue.repository.model.TVShow;
+import com.example.moviecatalogue.repository.model.TVShowResult;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<TVShow> tvShowList = new ArrayList<>();
+    private ArrayList<TVShowResult> tvShowList = new ArrayList<>();
 
     public TVShowItemAdapter(Context context) {
         this.context = context;
     }
 
-    public ArrayList<TVShow> getTVShowList() {
+    public ArrayList<TVShowResult> getTVShowList() {
         return tvShowList;
     }
 
-    public void setTVShowList(ArrayList<TVShow> tvShowArrayList) {
+    public void setTVShowList(ArrayList<TVShowResult> tvShowArrayList) {
         tvShowList.clear();
         tvShowList.addAll(tvShowArrayList);
         notifyDataSetChanged();
@@ -44,7 +44,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         this.onItemClickCallBack = onItemClickCallBack;
     }
 
-    private void setRatingProgressBar(final ViewHolder holder, TVShow tvShow) {
+    private void setRatingProgressBar(final ViewHolder holder, TVShowResult tvShow) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -52,7 +52,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = Float.parseFloat(tvShow.getRating()) * 10;
+        float rating = tvShow.getVoteAverage() * 10;
         if (rating >= 0 && rating <= 20) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(red)));
             holder.pbRating.setProgress((int) rating);
@@ -82,12 +82,12 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final TVShow tvShow = tvShowList.get(position);
+        final TVShowResult tvShow = tvShowList.get(position);
         Glide.with(holder.itemView.getContext())
-                .load("http://image.tmdb.org/t/p/w342" + tvShow.getPoster())
+                .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
                 .into(holder.imgPoster);
-        holder.tvTitle.setText(tvShow.getTitle());
-        holder.tvReleaseDate.setText(tvShow.getRelease_date());
+        holder.tvTitle.setText(tvShow.getOriginalName());
+        holder.tvReleaseDate.setText(tvShow.getFirstAirDate());
         setRatingProgressBar(holder, tvShow);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +120,6 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
     }
 
     public interface OnItemClickCallback {
-        void onItemClicked(TVShow tvShow);
+        void onItemClicked(TVShowResult tvShow);
     }
 }

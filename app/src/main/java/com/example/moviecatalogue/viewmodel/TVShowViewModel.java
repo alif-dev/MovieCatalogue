@@ -6,7 +6,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.moviecatalogue.repository.model.TVShow;
+import com.example.moviecatalogue.repository.model.MovieResponse;
+import com.example.moviecatalogue.repository.model.TVShowResponse;
+import com.example.moviecatalogue.repository.model.TVShowResult;
+import com.example.moviecatalogue.repository.remotedatasource.ApiClient;
+import com.example.moviecatalogue.repository.remotedatasource.ApiInterface;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -16,39 +20,44 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TVShowViewModel extends ViewModel {
     private static final String API_KEY = "13781a22a1b2140624ab4e366bec9eb8";
-    private MutableLiveData<ArrayList<TVShow>> tvShows = new MutableLiveData<>();
+    private static final String LANGUAGE = "en-US";
+    private MutableLiveData<ArrayList<TVShowResult>> tvShows = new MutableLiveData<>();
+    public String dataRetrieved = "";
 
-    public LiveData<ArrayList<TVShow>> getTVShows() {
+    public LiveData<ArrayList<TVShowResult>> getTVShows() {
         return tvShows;
     }
 
     public void setTvShows() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        final ArrayList<TVShow> tvShowList = new ArrayList<>();
-        String url = "https://api.themoviedb.org/3/discover/tv?api_key=" + API_KEY + "&language=en-US";
-        client.get(url, new AsyncHttpResponseHandler() {
+        // the url is "https://api.themoviedb.org/3/discover/tv?api_key=" + API_KEY + "&language=" + LANGUAGE
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<TVShowResponse> call = apiService.getTVShowInformation(API_KEY, LANGUAGE);
+
+        call.enqueue(new Callback<TVShowResponse>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                try {
-                    String result = new String(responseBody);
-                    JSONObject responseObject = new JSONObject(result);
-                    JSONArray list = responseObject.getJSONArray("results");
-                    for (int i = 0; i < list.length(); i++) {
-                        JSONObject tvShow = list.getJSONObject(i);
-                        TVShow tvShowItems = new TVShow(tvShow);
-                        tvShowList.add(tvShowItems);
+            public void onResponse(Call<TVShowResponse> call, Response<TVShowResponse> response) {
+                // Response<TVShowResponse> contains an object of TVShowResponse
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        // TVShowResponse object contains a List of TVShowResult objects
+                        // a TVShowResult object contains information of a movie
+                        tvShows.postValue(response.body().getTvShowResults());
+                        Log.d("tvshowsData: ", response.body().getTvShowResults().get(0).getOriginalName());
+                        dataRetrieved = "success";
                     }
-                    tvShows.postValue(tvShowList);
-                } catch (Exception e) {
-                    Log.d("Exception", e.getMessage());
                 }
             }
+
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(Call<TVShowResponse> call, Throwable error) {
                 Log.d("onFailure", error.getMessage());
+                dataRetrieved = "failed";
             }
         });
     }

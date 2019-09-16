@@ -1,11 +1,14 @@
 package com.example.moviecatalogue.view;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -15,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviecatalogue.R;
-import com.example.moviecatalogue.repository.model.TVShow;
+import com.example.moviecatalogue.repository.model.TVShowResult;
 import com.example.moviecatalogue.view.adapter.TVShowItemAdapter;
 import com.example.moviecatalogue.viewmodel.TVShowViewModel;
 
@@ -28,6 +31,7 @@ import java.util.Objects;
  * Use the {@link TVShowsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class TVShowsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,6 +44,7 @@ public class TVShowsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private TextView tvNetworkErrorMessage;
 
     private TVShowViewModel tvShowViewModel;
     private TVShowItemAdapter tvShowItemAdapter;
@@ -84,6 +89,14 @@ public class TVShowsFragment extends Fragment {
 
         tvShowItemAdapter = new TVShowItemAdapter(getActivity());
         tvShowItemAdapter.notifyDataSetChanged();
+        tvShowItemAdapter.setOnItemClickCallBack(new TVShowItemAdapter.OnItemClickCallback() {
+            @Override
+            public void onItemClicked(TVShowResult tvShow) {
+                Intent intent = new Intent(getActivity(), TVShowDetailActivity.class);
+                intent.putExtra(TVShowDetailActivity.TVSHOW_DATA_KEY, tvShow);
+                startActivity(intent);
+            }
+        });
 
         recyclerView = rootView.findViewById(R.id.recyclerview_tvshows);
         recyclerView.setHasFixedSize(true);
@@ -91,21 +104,51 @@ public class TVShowsFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(tvShowItemAdapter);
         progressBar = rootView.findViewById(R.id.progressbar_tvshows);
-        //showLoading(true);
+        tvNetworkErrorMessage = rootView.findViewById(R.id.tv_tvshows_error_message);
+        showLoading(true);
 
         tvShowViewModel = ViewModelProviders.of(this).get(TVShowViewModel.class);
         tvShowViewModel.getTVShows().observe(this, getTVShow);
         tvShowViewModel.setTvShows();
 
+        // show error message if data is failed to fetch from the server or API request doesn't happen
+        if (tvShowViewModel.dataRetrieved.equals("failed")) {
+            showLoading(false);
+            showNetworkErrorMessage(true);
+        } else if (tvShowViewModel.dataRetrieved.equals("")) {
+            // wait for 3 seconds for data to be retrieved
+            final Handler handler = new Handler();
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    handler.post(new Runnable() {
+                        public void run() {
+                            showLoading(false);
+                            // check whether data is still unattained or not after 3 seconds. If so, show error message
+                            if (tvShowViewModel.dataRetrieved.equals("")) {
+                                showNetworkErrorMessage(true);
+                            }
+                        }
+                    });
+                }
+            }).start();
+        }
+
         return rootView;
     }
 
-    private Observer<ArrayList<TVShow>> getTVShow = new Observer<ArrayList<TVShow>>() {
+    private Observer<ArrayList<TVShowResult>> getTVShow = new Observer<ArrayList<TVShowResult>>() {
         @Override
-        public void onChanged(ArrayList<TVShow> tvShows) {
+        public void onChanged(ArrayList<TVShowResult> tvShows) {
             if (tvShows != null) {
-                tvShowItemAdapter.setTVShowList(tvShows);
+                showNetworkErrorMessage(false);
                 showLoading(false);
+                tvShowItemAdapter.setTVShowList(tvShows);
             }
         }
     };
@@ -115,6 +158,14 @@ public class TVShowsFragment extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
         } else {
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void showNetworkErrorMessage(Boolean state) {
+        if (state) {
+            tvNetworkErrorMessage.setVisibility(View.VISIBLE);
+        } else {
+            tvNetworkErrorMessage.setVisibility(View.GONE);
         }
     }
 }
