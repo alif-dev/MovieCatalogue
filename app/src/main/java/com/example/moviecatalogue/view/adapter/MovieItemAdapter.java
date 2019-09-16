@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.moviecatalogue.R;
-import com.example.moviecatalogue.repository.model.Movie;
+import com.example.moviecatalogue.repository.model.MovieResult;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -24,17 +24,17 @@ import static com.example.moviecatalogue.view.utility.DateFormatter.formatDateTo
 
 public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<Movie> movieList = new ArrayList<>();
+    private ArrayList<MovieResult> movieList = new ArrayList<>();
 
     public MovieItemAdapter(Context context) {
         this.context = context;
     }
 
-    public ArrayList<Movie> getMovieList() {
+    public ArrayList<MovieResult> getMovieList() {
         return movieList;
     }
 
-    public void setMovieList(ArrayList<Movie> movieArrayList) {
+    public void setMovieList(ArrayList<MovieResult> movieArrayList) {
         movieList.clear();
         movieList.addAll(movieArrayList);
         notifyDataSetChanged();
@@ -46,7 +46,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         this.onItemClickCallBack = onItemClickCallBack;
     }
 
-    private void setRatingProgressBar(final ViewHolder holder, Movie movie) {
+    private void setRatingProgressBar(final ViewHolder holder, MovieResult movie) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -54,7 +54,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = Float.parseFloat(movie.getRating()) * 10;
+        float rating = movie.getVoteAverage() * 10;
         if (rating >= 0 && rating <= 20) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(red)));
             holder.pbRating.setProgress((int) rating);
@@ -84,12 +84,12 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final Movie movie = movieList.get(position);
+        final MovieResult movie = movieList.get(position);
         Glide.with(holder.itemView.getContext())
-                .load("http://image.tmdb.org/t/p/w342" + movie.getPoster())
+                .load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath())
                 .into(holder.imgPoster);
         holder.tvTitle.setText(movie.getTitle());
-        holder.tvReleaseDate.setText(formatDateToLocal(movie.getRelease_date()));
+        holder.tvReleaseDate.setText(formatDateToLocal(movie.getReleaseDate()));
         setRatingProgressBar(holder, movie);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +122,6 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
     }
 
     public interface OnItemClickCallback {
-        void onItemClicked(Movie movie);
+        void onItemClicked(MovieResult movie);
     }
 }

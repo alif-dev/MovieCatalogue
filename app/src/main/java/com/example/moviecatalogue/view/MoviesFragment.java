@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviecatalogue.R;
 import com.example.moviecatalogue.repository.model.Movie;
+import com.example.moviecatalogue.repository.model.MovieResult;
 import com.example.moviecatalogue.view.adapter.MovieItemAdapter;
 import com.example.moviecatalogue.viewmodel.MovieViewModel;
 
@@ -111,12 +112,12 @@ public class MoviesFragment extends Fragment {
         movieViewModel.getMovies().observe(this, getMovie);
         movieViewModel.setMovies();
 
-        // Show error message if data is failed to fetch from the server or API request doesn't happen
+        // show error message if data is failed to fetch from the server or API request doesn't happen
         if (movieViewModel.dataRetrieved.equals("failed")) {
             showLoading(false);
             showNetworkErrorMessage(true);
         } else if (movieViewModel.dataRetrieved.equals("")) {
-            // Wait for 3 seconds for data to be retrieved
+            // wait for 3 seconds for data to be retrieved
             final Handler handler = new Handler();
             new Thread(new Runnable() {
                 public void run() {
@@ -129,7 +130,7 @@ public class MoviesFragment extends Fragment {
                     handler.post(new Runnable() {
                         public void run() {
                             showLoading(false);
-                            // Check whether data is still unattained or not after 3 seconds. If so, show error message
+                            // check whether data is still unattained or not after 3 seconds. If so, show error message
                             if (movieViewModel.dataRetrieved.equals("")) {
                                 showNetworkErrorMessage(true);
                             }
@@ -142,9 +143,9 @@ public class MoviesFragment extends Fragment {
         return rootView;
     }
 
-    private Observer<ArrayList<Movie>> getMovie = new Observer<ArrayList<Movie>>() {
+    private Observer<ArrayList<MovieResult>> getMovie = new Observer<ArrayList<MovieResult>>() {
         @Override
-        public void onChanged(ArrayList<Movie> movies) {
+        public void onChanged(ArrayList<MovieResult> movies) {
             if (movies != null) {
                 showNetworkErrorMessage(false);
                 showLoading(false);
