@@ -5,15 +5,18 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.moviecatalogue.R;
@@ -29,6 +32,7 @@ public class TVShowDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private ImageView imgPoster;
     private TextView tvReleaseDate;
+    private ProgressBar progressBar;
     private ProgressBar pbRating;
     private ObjectAnimator objAnimator;
     private TextView tvPbRating;
@@ -46,6 +50,8 @@ public class TVShowDetailActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.title_tvshow_actionbar);
         }
 
+        final ConstraintLayout detailInformationLayout = findViewById(R.id.tvshow_dtl_information_viewgroup);
+        progressBar = findViewById(R.id.progressbar_dtl_tvshows);
         tvTitle = findViewById(R.id.tv_dtl_tvshow_title);
         imgPoster = findViewById(R.id.img_dtl_tvshow_poster);
         tvReleaseDate = findViewById(R.id.tv_dtl_tvshow_release_date_value);
@@ -54,16 +60,44 @@ public class TVShowDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tv_dtl_tvshow_description_value);
         tvGenres = findViewById(R.id.tv_dtl_tvshow_genres_value);
 
-        TVShowResult tvShow = getIntent().getParcelableExtra(TVSHOW_DATA_KEY);
-        if (tvShow != null) {
-            tvTitle.setText(tvShow.getOriginalName());
-            Glide.with(this)
-                    .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
-                    .into(imgPoster);
-            tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
-            setRatingProgressBar(tvShow);
-            tvDescription.setText(tvShow.getOverview());
-            tvGenres.setText(convertGenreIdsToAStringOfNames(tvShow.getGenreIds()));
+        // show loading before showing tvshow details
+        showLoading(true);
+        detailInformationLayout.setVisibility(View.INVISIBLE);
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(800);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    public void run() {
+                        showLoading(false);
+                        detailInformationLayout.setVisibility(View.VISIBLE);
+                        TVShowResult tvShow = getIntent().getParcelableExtra(TVSHOW_DATA_KEY);
+                        if (tvShow != null) {
+                            tvTitle.setText(tvShow.getOriginalName());
+                            Glide.with(TVShowDetailActivity.this)
+                                    .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
+                                    .into(imgPoster);
+                            tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
+                            setRatingProgressBar(tvShow);
+                            tvDescription.setText(tvShow.getOverview());
+                            tvGenres.setText(convertGenreIdsToAStringOfNames(tvShow.getGenreIds()));
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void showLoading(Boolean state) {
+        if (state) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
         }
     }
 

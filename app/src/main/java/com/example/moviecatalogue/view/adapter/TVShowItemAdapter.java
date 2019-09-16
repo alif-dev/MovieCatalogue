@@ -20,6 +20,8 @@ import com.example.moviecatalogue.repository.model.TVShowResult;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static com.example.moviecatalogue.view.utility.DateFormatter.formatDateToLocal;
+
 public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.ViewHolder> {
     private Context context;
     private ArrayList<TVShowResult> tvShowList = new ArrayList<>();
@@ -87,7 +89,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
                 .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
                 .into(holder.imgPoster);
         holder.tvTitle.setText(tvShow.getOriginalName());
-        holder.tvReleaseDate.setText(tvShow.getFirstAirDate());
+        holder.tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
         setRatingProgressBar(holder, tvShow);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

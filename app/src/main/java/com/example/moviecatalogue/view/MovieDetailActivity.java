@@ -5,19 +5,25 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
 
 import com.bumptech.glide.Glide;
 import com.example.moviecatalogue.R;
 import com.example.moviecatalogue.repository.model.MovieResult;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.Locale;
 
@@ -30,6 +36,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private ImageView imgPoster;
     private TextView tvReleaseDate;
+    private ProgressBar progressBar;
     private ProgressBar pbRating;
     private ObjectAnimator objAnimator;
     private TextView tvPbRating;
@@ -47,6 +54,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.title_movie_actionbar);
         }
 
+        final ConstraintLayout detailInformationLayout = findViewById(R.id.movie_dtl_information_viewgroup);
+        progressBar = findViewById(R.id.progressbar_dtl_movies);
         tvTitle = findViewById(R.id.tv_dtl_movie_title);
         imgPoster = findViewById(R.id.img_dtl_movie_poster);
         tvReleaseDate = findViewById(R.id.tv_dtl_movie_release_date_value);
@@ -55,16 +64,44 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tv_dtl_movie_description_value);
         tvGenres = findViewById(R.id.tv_dtl_movie_genres_value);
 
-        MovieResult movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
-        if (movie != null) {
-            tvTitle.setText(movie.getOriginalTitle());
-            Glide.with(this)
-                    .load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath())
-                    .into(imgPoster);
-            tvReleaseDate.setText(formatDateToLocal(movie.getReleaseDate()));
-            setRatingProgressBar(movie);
-            tvDescription.setText(movie.getOverview());
-            tvGenres.setText(convertGenreIdsToAStringOfNames(movie.getGenreIds()));
+        // show loading before showing movie details
+        showLoading(true);
+        detailInformationLayout.setVisibility(View.INVISIBLE);
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(800);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    public void run() {
+                        showLoading(false);
+                        MovieResult movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
+                        if (movie != null) {
+                            detailInformationLayout.setVisibility(View.VISIBLE);
+                            tvTitle.setText(movie.getOriginalTitle());
+                            Glide.with(MovieDetailActivity.this)
+                                    .load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath())
+                                    .into(imgPoster);
+                            tvReleaseDate.setText(formatDateToLocal(movie.getReleaseDate()));
+                            setRatingProgressBar(movie);
+                            tvDescription.setText(movie.getOverview());
+                            tvGenres.setText(convertGenreIdsToAStringOfNames(movie.getGenreIds()));
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void showLoading(Boolean state) {
+        if (state) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
         }
     }
 

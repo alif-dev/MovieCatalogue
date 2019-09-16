@@ -48,7 +48,6 @@ public class TVShowViewModel extends ViewModel {
                         // TVShowResponse object contains a List of TVShowResult objects
                         // a TVShowResult object contains information of a movie
                         tvShows.postValue(response.body().getTvShowResults());
-                        Log.d("tvshowsData: ", response.body().getTvShowResults().get(0).getOriginalName());
                         dataRetrieved = "success";
                     }
                 }

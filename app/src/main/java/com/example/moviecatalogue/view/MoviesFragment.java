@@ -112,16 +112,13 @@ public class MoviesFragment extends Fragment {
         movieViewModel.setMovies();
 
         // show error message if data is failed to fetch from the server or API request doesn't happen
-        if (movieViewModel.dataRetrieved.equals("failed")) {
-            showLoading(false);
-            showNetworkErrorMessage(true);
-        } else if (movieViewModel.dataRetrieved.equals("")) {
+        if (movieViewModel.dataRetrieved.equals("")) {
             // wait for 3 seconds for data to be retrieved
             final Handler handler = new Handler();
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(4000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -129,8 +126,8 @@ public class MoviesFragment extends Fragment {
                     handler.post(new Runnable() {
                         public void run() {
                             showLoading(false);
-                            // check whether data is still unattained or not after 3 seconds. If so, show error message
-                            if (movieViewModel.dataRetrieved.equals("")) {
+                            // check whether data is still unattained or not after 4 seconds. If so, show error message
+                            if (movieViewModel.dataRetrieved.equals("") || movieViewModel.dataRetrieved.equals("failed")) {
                                 showNetworkErrorMessage(true);
                             }
                         }

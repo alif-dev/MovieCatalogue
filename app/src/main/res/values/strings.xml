@@ -10,7 +10,7 @@
     <string name="genre_ids">Genres</string>
     <string name="dummy_genres" translatable="false"><![CDATA[Action, Sci-Fi & Fantasy, Adventure]]></string>
     <string name="dummy_release_date" translatable="false">August 20, 2019</string>
-    <string name="dummy_title" translatable="false">Aquaman</string>
+    <string name="dummy_title" translatable="false">Arrow</string>
     <string name="dummy_tvshow_description" translatable="false">This TV show is ....</string>
     <string name="language_setting">Language Setting</string>
     <string name="language">Language</string>

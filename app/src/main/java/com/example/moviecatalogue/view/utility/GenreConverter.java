@@ -87,6 +87,12 @@ public class GenreConverter {
             case 37:
                 genre = "Western";
                 break;
+            case 10759:
+                genre = "Action & Adventure";
+                break;
+            case 10765:
+                genre = "Sci-Fi & Fantasy";
+                break;
             default:
                 genre = "Unknown";
                 break;
