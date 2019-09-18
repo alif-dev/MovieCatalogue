@@ -88,7 +88,6 @@ public class MoviesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-
         return rootView;
     }
 

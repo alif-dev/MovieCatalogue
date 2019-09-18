@@ -23,16 +23,10 @@ import java.util.Locale;
 import static com.alif.moviecatalogue.view.utility.DateFormatter.formatDateToLocal;
 
 public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.ViewHolder> {
-    private Context context;
     private ArrayList<TVShowResult> tvShowList = new ArrayList<>();
 
     public TVShowItemAdapter(Context context) {
-        this.context = context;
-    }
 
-    @SuppressWarnings("unused")
-    public ArrayList<TVShowResult> getTVShowList() {
-        return tvShowList;
     }
 
     public void setTVShowList(ArrayList<TVShowResult> tvShowArrayList) {
