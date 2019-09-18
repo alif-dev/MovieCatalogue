@@ -18,9 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.bumptech.glide.Glide;
 import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.TVShowResult;
+import com.bumptech.glide.Glide;
 
 import java.util.Locale;
 

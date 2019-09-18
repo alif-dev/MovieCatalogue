@@ -13,7 +13,7 @@ public class GenreConverter {
     private static ArrayList<String> convertGenreIdListToNameList(List<Integer> genre_ids) {
         ArrayList<String> genreNameList = new ArrayList<>();
         for (int i = 0; i < genre_ids.size(); i++) {
-            String genre = convertGenreIdtoGenreName(genre_ids.get(i));
+            String genre = convertGenreIdToGenreName(genre_ids.get(i));
             genreNameList.add(genre);
         }
         return genreNameList;
@@ -27,7 +27,7 @@ public class GenreConverter {
         return genresStringBuilder.toString();
     }
 
-    private static String convertGenreIdtoGenreName(Integer genreId) {
+    private static String convertGenreIdToGenreName(Integer genreId) {
         String genre;
         switch (genreId) {
             case 28:

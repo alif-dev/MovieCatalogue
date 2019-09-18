@@ -13,9 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.TVShowResult;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,6 +30,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         this.context = context;
     }
 
+    @SuppressWarnings("unused")
     public ArrayList<TVShowResult> getTVShowList() {
         return tvShowList;
     }

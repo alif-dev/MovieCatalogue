@@ -13,9 +13,6 @@
     <string name="dummy_title" translatable="false">Arrow</string>
     <string name="dummy_tvshow_description" translatable="false">This TV show is ....</string>
     <string name="language_setting">Language Setting</string>
-    <string name="language">Language</string>
-    <string name="rbtn_indonesia" translatable="false">Bahasa Indonesia</string>
-    <string name="rbtn_english" translatable="false">English</string>
     <string name="title_movie_actionbar">Movie Details</string>
     <string name="title_tvshow_actionbar">TV Show Details</string>
     <string name="network_error_message">Network is unavailable or server down!</string>

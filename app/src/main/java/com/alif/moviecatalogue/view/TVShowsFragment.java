@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -86,6 +88,12 @@ public class TVShowsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_tvshows, container, false);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         tvShowItemAdapter = new TVShowItemAdapter(getActivity());
         tvShowItemAdapter.notifyDataSetChanged();
@@ -98,13 +106,13 @@ public class TVShowsFragment extends Fragment {
             }
         });
 
-        recyclerView = rootView.findViewById(R.id.recyclerview_tvshows);
+        recyclerView = view.findViewById(R.id.recyclerview_tvshows);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(tvShowItemAdapter);
-        progressBar = rootView.findViewById(R.id.progressbar_tvshows);
-        tvNetworkErrorMessage = rootView.findViewById(R.id.tv_tvshows_error_message);
+        progressBar = view.findViewById(R.id.progressbar_tvshows);
+        tvNetworkErrorMessage = view.findViewById(R.id.tv_tvshows_error_message);
         showLoading(true);
 
         tvShowViewModel = ViewModelProviders.of(this).get(TVShowViewModel.class);
@@ -113,7 +121,7 @@ public class TVShowsFragment extends Fragment {
 
         // show error message if data is failed to fetch from the server or API request doesn't happen
         if (tvShowViewModel.dataRetrieved.equals("")) {
-            // wait for 3 seconds for data to be retrieved
+            // wait for 4 seconds for data to be retrieved
             final Handler handler = new Handler();
             new Thread(new Runnable() {
                 public void run() {
@@ -135,8 +143,6 @@ public class TVShowsFragment extends Fragment {
                 }
             }).start();
         }
-
-        return rootView;
     }
 
     private Observer<ArrayList<TVShowResult>> getTVShow = new Observer<ArrayList<TVShowResult>>() {

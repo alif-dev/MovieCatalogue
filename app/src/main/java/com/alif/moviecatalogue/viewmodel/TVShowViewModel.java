@@ -39,7 +39,7 @@ public class TVShowViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         // TVShowResponse object contains a List of TVShowResult objects
-                        // a TVShowResult object contains information of a movie
+                        // a TVShowResult object contains information of a tvshow
                         tvShows.postValue(response.body().getTvShowResults());
                         dataRetrieved = "success";
                     }

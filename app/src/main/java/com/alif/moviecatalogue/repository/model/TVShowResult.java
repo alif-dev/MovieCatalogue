@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class TVShowResult implements Parcelable {
     @SerializedName("original_name")
     private String originalName;

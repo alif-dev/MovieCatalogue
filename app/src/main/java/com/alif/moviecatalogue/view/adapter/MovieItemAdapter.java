@@ -13,9 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.MovieResult;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,6 +30,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         this.context = context;
     }
 
+    @SuppressWarnings("unused")
     public ArrayList<MovieResult> getMovieList() {
         return movieList;
     }

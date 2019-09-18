@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -87,6 +89,13 @@ public class MoviesFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         movieItemAdapter = new MovieItemAdapter(getActivity());
         movieItemAdapter.notifyDataSetChanged();
         movieItemAdapter.setOnItemClickCallBack(new MovieItemAdapter.OnItemClickCallback() {
@@ -98,13 +107,13 @@ public class MoviesFragment extends Fragment {
             }
         });
 
-        recyclerView = rootView.findViewById(R.id.recyclerview_movies);
+        recyclerView = view.findViewById(R.id.recyclerview_movies);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getActivity()), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(movieItemAdapter);
-        progressBar = rootView.findViewById(R.id.progressbar_movies);
-        tvNetworkErrorMessage = rootView.findViewById(R.id.tv_movies_error_message);
+        progressBar = view.findViewById(R.id.progressbar_movies);
+        tvNetworkErrorMessage = view.findViewById(R.id.tv_movies_error_message);
         showLoading(true);
 
         movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
@@ -113,7 +122,7 @@ public class MoviesFragment extends Fragment {
 
         // show error message if data is failed to fetch from the server or API request doesn't happen
         if (movieViewModel.dataRetrieved.equals("")) {
-            // wait for 3 seconds for data to be retrieved
+            // wait for 4 seconds for data to be retrieved
             final Handler handler = new Handler();
             new Thread(new Runnable() {
                 public void run() {
@@ -135,8 +144,6 @@ public class MoviesFragment extends Fragment {
                 }
             }).start();
         }
-
-        return rootView;
     }
 
     private Observer<ArrayList<MovieResult>> getMovie = new Observer<ArrayList<MovieResult>>() {
