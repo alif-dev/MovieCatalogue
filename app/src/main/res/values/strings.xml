@@ -16,4 +16,13 @@
     <string name="title_movie_actionbar">Movie Details</string>
     <string name="title_tvshow_actionbar">TV Show Details</string>
     <string name="network_error_message">Network is unavailable or server down!</string>
+
+    <string name="bottom_nav_title_movies">Movies</string>
+    <string name="bottom_nav_title_tvshows">TVShows</string>
+    <string name="bottom_nav_title_favorites">Favorites</string>
+    <string name="menu_main_select_as_favorite" translatable="false">Select as favorite</string>
+    <string name="toast_favorite_movie">This movie has been set as favorite!</string>
+    <string name="toast_unfavorite_movie">This movie has been removed from favorite list!</string>
+    <string name="toast_favorite_tvshow">This TV show has been set as favorite!</string>
+    <string name="toast_unfavorite_tvshow">This TV show has been removed from favorite list!</string>
 </resources>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,7 +39,9 @@ public class TVShowDetailActivity extends AppCompatActivity {
     private TextView tvPbRating;
     private TextView tvDescription;
     private TextView tvGenres;
+    private Menu menu;
     public static String TVSHOW_DATA_KEY = "tvShowData";
+    private boolean setAsFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +137,7 @@ public class TVShowDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -143,6 +146,17 @@ public class TVShowDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.action_favorite:
+                if (!setAsFavorite) {
+                    setAsFavorite = true;
+                    menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
+                    Toast.makeText(this, getString(R.string.toast_favorite_tvshow), Toast.LENGTH_SHORT).show();
+                } else {
+                    setAsFavorite = false;
+                    menu.getItem(0).setIcon(R.drawable.ic_favorite_white_opacity_75);
+                    Toast.makeText(this, getString(R.string.toast_unfavorite_tvshow), Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.action_change_language_setting:
                 Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);

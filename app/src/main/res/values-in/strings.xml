@@ -11,4 +11,11 @@
     <string name="title_movie_actionbar">Detail Film</string>
     <string name="title_tvshow_actionbar">Detail Acara TV</string>
     <string name="network_error_message">Jaringan tidak tersedia atau server down!</string>
+    <string name="bottom_nav_title_favorites">Favorit</string>
+    <string name="bottom_nav_title_movies">Film</string>
+    <string name="bottom_nav_title_tvshows">Acara TV</string>
+    <string name="toast_favorite_movie">Film ini telah dipilih sebagai favorit!</string>
+    <string name="toast_favorite_tvshow">Acara TV ini telah dipilih sebagai favorit!</string>
+    <string name="toast_unfavorite_movie">Film ini telah dihapus dari daftar favorit!</string>
+    <string name="toast_unfavorite_tvshow">Acara TV ini telah dihapus dari daftar favorit!</string>
 </resources>
