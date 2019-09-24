@@ -1,4 +1,4 @@
-package com.alif.moviecatalogue.repository.remotedatasource;
+package com.alif.moviecatalogue.repository.remotedatasource.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

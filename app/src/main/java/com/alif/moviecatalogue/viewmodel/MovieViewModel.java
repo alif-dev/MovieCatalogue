@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.alif.moviecatalogue.repository.model.MovieResponse;
 import com.alif.moviecatalogue.repository.model.MovieResult;
-import com.alif.moviecatalogue.repository.remotedatasource.ApiClient;
-import com.alif.moviecatalogue.repository.remotedatasource.ApiInterface;
+import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiClient;
+import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiInterface;
 
 import java.util.ArrayList;
 

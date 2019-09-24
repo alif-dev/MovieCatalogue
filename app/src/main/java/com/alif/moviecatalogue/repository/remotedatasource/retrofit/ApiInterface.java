@@ -1,4 +1,4 @@
-package com.alif.moviecatalogue.repository.remotedatasource;
+package com.alif.moviecatalogue.repository.remotedatasource.retrofit;
 
 import com.alif.moviecatalogue.repository.model.MovieResponse;
 import com.alif.moviecatalogue.repository.model.TVShowResponse;
