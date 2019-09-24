@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.alif.moviecatalogue.view.utility.DateFormatter.formatDateToLocal;
+
 public class FavoriteTVShowItemAdapter extends RecyclerView.Adapter<FavoriteTVShowItemAdapter.ViewHolder> {
     private ArrayList<Favorite> favoriteList = new ArrayList<>();
 
@@ -52,7 +54,7 @@ public class FavoriteTVShowItemAdapter extends RecyclerView.Adapter<FavoriteTVSh
                 .load("http://image.tmdb.org/t/p/w342" + favorite.getPosterPath())
                 .into(holder.imgPoster);
         holder.tvTitle.setText(favorite.getTitle());
-        holder.tvReleaseDate.setText(favorite.getReleaseDate());
+        holder.tvReleaseDate.setText(formatDateToLocal(favorite.getReleaseDate()));
         setRatingProgressBar(holder, favorite);
     }
 
