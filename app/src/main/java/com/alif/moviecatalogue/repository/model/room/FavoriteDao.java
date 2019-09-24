@@ -1,10 +1,12 @@
-package com.alif.moviecatalogue.repository.model;
+package com.alif.moviecatalogue.repository.model.room;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.alif.moviecatalogue.repository.model;
+package com.alif.moviecatalogue.repository.model.room.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

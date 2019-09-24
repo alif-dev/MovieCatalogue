@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.repository.model.Favorite;
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 import com.alif.moviecatalogue.view.adapter.FavoriteMovieItemAdapter;
 import com.alif.moviecatalogue.viewmodel.FavoriteViewModel;
 

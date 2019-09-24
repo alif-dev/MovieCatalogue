@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.alif.moviecatalogue.repository.FavoriteRepository;
-import com.alif.moviecatalogue.repository.model.Favorite;
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 
 import java.util.List;
 

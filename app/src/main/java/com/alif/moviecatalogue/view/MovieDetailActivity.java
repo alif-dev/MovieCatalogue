@@ -21,7 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.repository.model.Favorite;
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 import com.alif.moviecatalogue.repository.model.MovieResult;
 import com.alif.moviecatalogue.viewmodel.FavoriteViewModel;
 import com.bumptech.glide.Glide;
