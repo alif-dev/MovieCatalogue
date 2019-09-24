@@ -18,4 +18,5 @@
     <string name="toast_favorite_tvshow">Acara TV ini telah dipilih sebagai favorit!</string>
     <string name="toast_unfavorite_movie">Film ini telah dihapus dari daftar favorit!</string>
     <string name="toast_unfavorite_tvshow">Acara TV ini telah dihapus dari daftar favorit!</string>
+    <string name="toast_favorite_deleted">telah dihapus.</string>
 </resources>

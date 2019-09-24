@@ -21,7 +21,12 @@ public class DateFormatter {
         }
 
         if (date != null) {
-            formattedDate = new SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(date);
+            Locale localeIndonesia = new Locale("in", "ID");
+            if (Locale.getDefault().equals(localeIndonesia)) {
+                formattedDate = new SimpleDateFormat("d MMMM yyyy", localeIndonesia).format(date);
+            } else {
+                formattedDate = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()).format(date);
+            }
         }
 
         return formattedDate;

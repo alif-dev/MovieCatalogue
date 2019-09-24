@@ -14,34 +14,54 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.repository.model.MovieResult;
+import com.alif.moviecatalogue.repository.model.Favorite;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import static com.alif.moviecatalogue.view.utility.DateFormatter.formatDateToLocal;
+public class FavoriteMovieItemAdapter extends RecyclerView.Adapter<FavoriteMovieItemAdapter.ViewHolder> {
+    private ArrayList<Favorite> favoriteList = new ArrayList<>();
 
-public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.ViewHolder> {
-    private ArrayList<MovieResult> movieList = new ArrayList<>();
-
-    public MovieItemAdapter(Context context) {
+    public FavoriteMovieItemAdapter(Context context) {
 
     }
 
-    public void setMovieList(ArrayList<MovieResult> movieArrayList) {
-        movieList.clear();
-        movieList.addAll(movieArrayList);
+    public void setFavoriteList(List<Favorite> favorites) {
+        favoriteList.clear();
+        favoriteList = (ArrayList<Favorite>) favorites;
         notifyDataSetChanged();
     }
 
-    private OnItemClickCallback onItemClickCallBack;
-
-    public void setOnItemClickCallBack(OnItemClickCallback onItemClickCallBack) {
-        this.onItemClickCallBack = onItemClickCallBack;
+    public Favorite getFavoriteAtPosition(int position) {
+        return favoriteList.get(position);
     }
 
-    private void setRatingProgressBar(final ViewHolder holder, MovieResult movie) {
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_favorite_movie, viewGroup, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final Favorite favorite = favoriteList.get(position);
+        Glide.with(holder.itemView.getContext())
+                .load("http://image.tmdb.org/t/p/w342" + favorite.getPosterPath())
+                .into(holder.imgPoster);
+        holder.tvTitle.setText(favorite.getTitle());
+        holder.tvReleaseDate.setText(favorite.getReleaseDate());
+        setRatingProgressBar(holder, favorite);
+    }
+
+    @Override
+    public int getItemCount() {
+        return favoriteList.size();
+    }
+
+    private void setRatingProgressBar(final ViewHolder holder, Favorite favorite) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -49,7 +69,7 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = movie.getVoteAverage() * 10;
+        float rating = favorite.getRating() * 10;
         if (rating >= 0 && rating <= 20) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(red)));
             holder.pbRating.setProgress((int) rating);
@@ -70,35 +90,6 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
         holder.tvPbRating.setText(String.format(Locale.ENGLISH, "%.1f%%", rating));
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_movie, viewGroup, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final MovieResult movie = movieList.get(position);
-        Glide.with(holder.itemView.getContext())
-                .load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath())
-                .into(holder.imgPoster);
-        holder.tvTitle.setText(movie.getTitle());
-        holder.tvReleaseDate.setText(formatDateToLocal(movie.getReleaseDate()));
-        setRatingProgressBar(holder, movie);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClickCallBack.onItemClicked(movie);
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return movieList.size();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgPoster;
         TextView tvTitle;
@@ -114,9 +105,5 @@ public class MovieItemAdapter extends RecyclerView.Adapter<MovieItemAdapter.View
             pbRating = itemView.findViewById(R.id.pb_movie_rating);
             tvPbRating = itemView.findViewById(R.id.tv_movie_pb_rating);
         }
-    }
-
-    public interface OnItemClickCallback {
-        void onItemClicked(MovieResult movie);
     }
 }

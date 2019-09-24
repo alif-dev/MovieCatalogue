@@ -14,34 +14,54 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.repository.model.TVShowResult;
+import com.alif.moviecatalogue.repository.model.Favorite;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import static com.alif.moviecatalogue.view.utility.DateFormatter.formatDateToLocal;
+public class FavoriteTVShowItemAdapter extends RecyclerView.Adapter<FavoriteTVShowItemAdapter.ViewHolder> {
+    private ArrayList<Favorite> favoriteList = new ArrayList<>();
 
-public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.ViewHolder> {
-    private ArrayList<TVShowResult> tvShowList = new ArrayList<>();
-
-    public TVShowItemAdapter(Context context) {
+    public FavoriteTVShowItemAdapter(Context context) {
 
     }
 
-    public void setTVShowList(ArrayList<TVShowResult> tvShowArrayList) {
-        tvShowList.clear();
-        tvShowList.addAll(tvShowArrayList);
+    public void setFavoriteList(List<Favorite> favorites) {
+        favoriteList.clear();
+        favoriteList = (ArrayList<Favorite>) favorites;
         notifyDataSetChanged();
     }
 
-    private OnItemClickCallback onItemClickCallBack;
-
-    public void setOnItemClickCallBack(OnItemClickCallback onItemClickCallBack) {
-        this.onItemClickCallBack = onItemClickCallBack;
+    public Favorite getFavoriteAtPosition(int position) {
+        return favoriteList.get(position);
     }
 
-    private void setRatingProgressBar(final ViewHolder holder, TVShowResult tvShow) {
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_favorite_tvshow, viewGroup, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        final Favorite favorite = favoriteList.get(position);
+        Glide.with(holder.itemView.getContext())
+                .load("http://image.tmdb.org/t/p/w342" + favorite.getPosterPath())
+                .into(holder.imgPoster);
+        holder.tvTitle.setText(favorite.getTitle());
+        holder.tvReleaseDate.setText(favorite.getReleaseDate());
+        setRatingProgressBar(holder, favorite);
+    }
+
+    @Override
+    public int getItemCount() {
+        return favoriteList.size();
+    }
+
+    private void setRatingProgressBar(final ViewHolder holder, Favorite favorite) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -49,7 +69,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = tvShow.getVoteAverage() * 10;
+        float rating = favorite.getRating() * 10;
         if (rating >= 0 && rating <= 20) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(red)));
             holder.pbRating.setProgress((int) rating);
@@ -70,35 +90,6 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         holder.tvPbRating.setText(String.format(Locale.ENGLISH, "%.1f%%", rating));
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_tvshow, viewGroup, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final TVShowResult tvShow = tvShowList.get(position);
-        Glide.with(holder.itemView.getContext())
-                .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
-                .into(holder.imgPoster);
-        holder.tvTitle.setText(tvShow.getOriginalName());
-        holder.tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
-        setRatingProgressBar(holder, tvShow);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClickCallBack.onItemClicked(tvShow);
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return tvShowList.size();
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgPoster;
         TextView tvTitle;
@@ -114,9 +105,5 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
             pbRating = itemView.findViewById(R.id.pb_tvshow_rating);
             tvPbRating = itemView.findViewById(R.id.tv_tvshow_pb_rating);
         }
-    }
-
-    public interface OnItemClickCallback {
-        void onItemClicked(TVShowResult tvShow);
     }
 }

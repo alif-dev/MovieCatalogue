@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.view.adapter.SectionsPagerAdapter;
+import com.alif.moviecatalogue.view.adapter.FavoriteSectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 /**
@@ -68,7 +68,7 @@ public class FavoritesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getActivity(), getChildFragmentManager());
+        FavoriteSectionsPagerAdapter sectionsPagerAdapter = new FavoriteSectionsPagerAdapter(getActivity(), getChildFragmentManager());
         ViewPager viewPager = view.findViewById(R.id.view_pager_favorite);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = view.findViewById(R.id.tabs_favorite);

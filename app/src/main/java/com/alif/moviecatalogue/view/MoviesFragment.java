@@ -133,7 +133,7 @@ public class MoviesFragment extends Fragment {
                     handler.post(new Runnable() {
                         public void run() {
                             showLoading(false);
-                            // check whether data is still unattained or not after 4 seconds. If so, show error message
+                            // check whether data is still unattained after 4 seconds. If so, show error message
                             if (movieViewModel.dataRetrieved.equals("") || movieViewModel.dataRetrieved.equals("failed")) {
                                 showNetworkErrorMessage(true);
                             }

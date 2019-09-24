@@ -18,9 +18,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.alif.moviecatalogue.R;
+import com.alif.moviecatalogue.repository.model.Favorite;
 import com.alif.moviecatalogue.repository.model.MovieResult;
+import com.alif.moviecatalogue.viewmodel.FavoriteViewModel;
 import com.bumptech.glide.Glide;
 
 import java.util.Locale;
@@ -40,9 +43,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView tvPbRating;
     private TextView tvDescription;
     private TextView tvGenres;
+    private ConstraintLayout detailInformationLayout;
     private Menu menu;
     public static String MOVIE_DATA_KEY = "movieData";
-    private boolean setAsFavorite;
+    private MovieResult movie;
+    private String category = "movie";
+    private FavoriteViewModel viewModel;
+    private Favorite favorite;
+    int[] favoriteCount = new int[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +62,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.title_movie_actionbar);
         }
 
-        final ConstraintLayout detailInformationLayout = findViewById(R.id.movie_dtl_information_viewgroup);
+        movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
+        defineFavoriteData();
+
+        detailInformationLayout = findViewById(R.id.movie_dtl_information_viewgroup);
         progressBar = findViewById(R.id.progressbar_dtl_movies);
         tvTitle = findViewById(R.id.tv_dtl_movie_title);
         imgPoster = findViewById(R.id.img_dtl_movie_poster);
@@ -63,8 +74,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvPbRating = findViewById(R.id.tv_dtl_pb_tvshow_rating);
         tvDescription = findViewById(R.id.tv_dtl_movie_description_value);
         tvGenres = findViewById(R.id.tv_dtl_movie_genres_value);
+        viewModel = ViewModelProviders.of(this).get(FavoriteViewModel.class);
 
-        // show loading before showing movie details
+        showDetails();
+    }
+
+    private void showDetails() {
+        // use handler to show loading before showing movie details
         showLoading(true);
         detailInformationLayout.setVisibility(View.INVISIBLE);
         final Handler handler = new Handler();
@@ -72,6 +88,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void run() {
                 try {
                     Thread.sleep(800);
+                    // check whether the data is already listed as favorite
+                    favoriteCount[0] = viewModel.count(movie.getId());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -79,7 +97,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     public void run() {
                         showLoading(false);
-                        MovieResult movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
+                        movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
                         if (movie != null) {
                             detailInformationLayout.setVisibility(View.VISIBLE);
                             tvTitle.setText(movie.getOriginalTitle());
@@ -90,6 +108,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                             setRatingProgressBar(movie);
                             tvDescription.setText(movie.getOverview());
                             tvGenres.setText(convertGenreIdsToAStringOfNames(movie.getGenreIds()));
+
+                            if (favoriteCount[0] > 0) {
+                                menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
+                            } else {
+                                menu.getItem(0).setIcon(R.drawable.ic_favorite_white_opacity_75);
+                            }
                         }
                     }
                 });
@@ -103,6 +127,18 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private void defineFavoriteData() {
+        favorite = new Favorite();
+        favorite.setId(movie.getId());
+        favorite.setTitle(movie.getTitle());
+        favorite.setPosterPath(movie.getPosterPath());
+        favorite.setReleaseDate(movie.getReleaseDate());
+        favorite.setRating(movie.getVoteAverage());
+        favorite.setOverview(movie.getOverview());
+        favorite.setGenre(convertGenreIdsToAStringOfNames(movie.getGenreIds()));
+        favorite.setCategory(category);
     }
 
     private void setRatingProgressBar(MovieResult movie) {
@@ -136,6 +172,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         objAnimator.start();
     }
 
+    private void insertFavoriteMovieToDB() {
+        viewModel.insert(favorite);
+    }
+
+    private void deleteFavoriteMovieFromDB() {
+        viewModel.delete(favorite);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
@@ -150,14 +194,16 @@ public class MovieDetailActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.action_favorite:
-                if (!setAsFavorite) {
-                    setAsFavorite = true;
-                    menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
-                    Toast.makeText(this, getString(R.string.toast_favorite_movie), Toast.LENGTH_SHORT).show();
-                } else {
-                    setAsFavorite = false;
+                if (favoriteCount[0] > 0) {
+                    deleteFavoriteMovieFromDB();
+                    favoriteCount[0] = 0;
                     menu.getItem(0).setIcon(R.drawable.ic_favorite_white_opacity_75);
                     Toast.makeText(this, getString(R.string.toast_unfavorite_movie), Toast.LENGTH_SHORT).show();
+                } else {
+                    insertFavoriteMovieToDB();
+                    favoriteCount[0] = 1;
+                    menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
+                    Toast.makeText(this, getString(R.string.toast_favorite_movie), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.action_change_language_setting:

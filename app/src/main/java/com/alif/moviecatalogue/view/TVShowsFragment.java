@@ -133,7 +133,7 @@ public class TVShowsFragment extends Fragment {
                     handler.post(new Runnable() {
                         public void run() {
                             showLoading(false);
-                            // check whether data is still unattained or not after 4 seconds. If so, show error message
+                            // check whether data is still unattained after 4 seconds. If so, show error message
                             if (tvShowViewModel.dataRetrieved.equals("") || tvShowViewModel.dataRetrieved.equals("failed")) {
                                 showNetworkErrorMessage(true);
                             }

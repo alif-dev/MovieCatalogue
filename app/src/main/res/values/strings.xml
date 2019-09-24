@@ -25,4 +25,5 @@
     <string name="toast_unfavorite_movie">This movie has been removed from favorite list!</string>
     <string name="toast_favorite_tvshow">This TV show has been set as favorite!</string>
     <string name="toast_unfavorite_tvshow">This TV show has been removed from favorite list!</string>
+    <string name="toast_favorite_deleted">has been deleted.</string>
 </resources>
