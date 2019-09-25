@@ -48,8 +48,29 @@ public class MovieViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable error) {
-                Log.d("onFailure", error.getMessage());
+                Log.d("onMovieFailure", error.getMessage());
                 dataRetrieved = "failed";
+            }
+        });
+    }
+
+    public void searchMovie(String movieTitle) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<MovieResponse> call = apiService.searchMovie(API_KEY, LANGUAGE, movieTitle);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        movies.postValue(response.body().getMovieResults());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable error) {
+                Log.d("onMovieSearchFailure", error.getMessage());
             }
         });
     }

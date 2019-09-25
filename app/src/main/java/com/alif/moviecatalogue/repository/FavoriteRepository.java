@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
-import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 import com.alif.moviecatalogue.repository.model.room.FavoriteDao;
 import com.alif.moviecatalogue.repository.model.room.FavoriteRoomDatabase;
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 
 import java.util.List;
 

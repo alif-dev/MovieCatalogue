@@ -48,8 +48,29 @@ public class TVShowViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<TVShowResponse> call, Throwable error) {
-                Log.d("onFailure", error.getMessage());
+                Log.d("onTVShowFailure", error.getMessage());
                 dataRetrieved = "failed";
+            }
+        });
+    }
+
+    public void searchTVShow(String tvShowName) {
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<TVShowResponse> call = apiService.searchTVShow(API_KEY, LANGUAGE, tvShowName);
+
+        call.enqueue(new Callback<TVShowResponse>() {
+            @Override
+            public void onResponse(Call<TVShowResponse> call, Response<TVShowResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        tvShows.postValue(response.body().getTvShowResults());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TVShowResponse> call, Throwable error) {
+                Log.d("onTVShowSearchFailure", error.getMessage());
             }
         });
     }

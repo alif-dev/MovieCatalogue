@@ -105,7 +105,7 @@ public class FavoriteMoviesFragment extends Fragment {
             }
         });
 
-        // add the swipe-to-delete functionality in the recyclerview to delete the favorite movies
+        // add the swipe-to-delete functionality to the recyclerview to delete the favorite movies
         addSwipeToDeleteFunctionality();
     }
 

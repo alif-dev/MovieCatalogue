@@ -105,7 +105,7 @@ public class FavoriteTVShowsFragment extends Fragment {
             }
         });
 
-        // add the swipe-to-delete functionality in the recyclerview to delete the favorite tvshows
+        // add the swipe-to-delete functionality to the recyclerview to delete the favorite tvshows
         addSwipeToDeleteFunctionality();
     }
 

@@ -26,4 +26,7 @@
     <string name="toast_favorite_tvshow">This TV show has been set as favorite!</string>
     <string name="toast_unfavorite_tvshow">This TV show has been removed from favorite list!</string>
     <string name="toast_favorite_deleted">has been deleted.</string>
+    <string name="search_movie_hint">Enter a movie title</string>
+    <string name="search_tvshow_hint">Enter a TV show name</string>
+    <string name="toast_search">Searching </string>
 </resources>
