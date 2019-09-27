@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout;
  * Use the {@link FavoritesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class FavoritesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -98,9 +99,15 @@ public class FavoritesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_change_language_setting) {
-            Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
-            startActivity(mIntent);
+        switch (item.getItemId()) {
+            case R.id.action_change_language_setting:
+                Intent languageSettingIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
+                startActivity(languageSettingIntent);
+                break;
+            case R.id.action_change_reminder_setting:
+                Intent reminderSettingIntent = new Intent(getActivity(), ReminderSettingActivity.class);
+                startActivity(reminderSettingIntent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

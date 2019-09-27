@@ -210,9 +210,15 @@ public class TVShowsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_change_language_setting) {
-            Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
-            startActivity(mIntent);
+        switch (item.getItemId()) {
+            case R.id.action_change_language_setting:
+                Intent languageSettingIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
+                startActivity(languageSettingIntent);
+                break;
+            case R.id.action_change_reminder_setting:
+                Intent reminderSettingIntent = new Intent(getActivity(), ReminderSettingActivity.class);
+                startActivity(reminderSettingIntent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

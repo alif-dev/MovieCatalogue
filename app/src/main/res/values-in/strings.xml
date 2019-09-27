@@ -3,7 +3,7 @@
     <string name="app_name">Movie Catalogue</string>
     <string name="description">Deskripsi</string>
     <string name="genre_ids">Genre</string>
-    <string name="language_setting">Pengaturan Bahasa</string>
+    <string name="title_language_setting">Pengaturan Bahasa</string>
     <string name="rating">Penilaian</string>
     <string name="release_date">Tanggal Rilis</string>
     <string name="tab1_Movies">Film</string>
@@ -22,4 +22,10 @@
     <string name="search_movie_hint">Masukkan judul film</string>
     <string name="search_tvshow_hint">Masukkan nama acara TV</string>
     <string name="toast_search">"Mencari "</string>
+    <string name="title_search">Cari</string>
+    <string name="summary_daily_reminder">Pengingat untuk kembali ke aplikasi</string>
+    <string name="summary_release_reminder">Pengingat untuk menampilkan film yang dirilis hari ini</string>
+    <string name="title_daily_reminder">Pengingat Harian</string>
+    <string name="title_release_reminder">Pengingat Rilis</string>
+    <string name="title_reminder_setting">Pengaturan Pengingat</string>
 </resources>

@@ -210,6 +210,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
                 startActivity(mIntent);
                 break;
+            case R.id.action_change_reminder_setting:
+                Intent reminderSettingIntent = new Intent(this, ReminderSettingActivity.class);
+                startActivity(reminderSettingIntent);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

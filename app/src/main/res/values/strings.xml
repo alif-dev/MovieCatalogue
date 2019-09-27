@@ -12,7 +12,7 @@
     <string name="dummy_release_date" translatable="false">August 20, 2019</string>
     <string name="dummy_title" translatable="false">Arrow</string>
     <string name="dummy_tvshow_description" translatable="false">This TV show is ....</string>
-    <string name="language_setting">Language Setting</string>
+    <string name="title_language_setting">Language Setting</string>
     <string name="title_movie_actionbar">Movie Details</string>
     <string name="title_tvshow_actionbar">TV Show Details</string>
     <string name="network_error_message">Network is unavailable or server down!</string>
@@ -29,4 +29,13 @@
     <string name="search_movie_hint">Enter a movie title</string>
     <string name="search_tvshow_hint">Enter a TV show name</string>
     <string name="toast_search">Searching </string>
+    <string name="title_search">Search</string>
+
+    <string name="key_release_reminder" translatable="false">release_reminder</string>
+    <string name="title_release_reminder">Release Reminder</string>
+    <string name="summary_release_reminder">Reminder showing the movie that released today</string>
+    <string name="key_daily_reminder" translatable="false">daily_reminder</string>
+    <string name="title_daily_reminder">Daily Reminder</string>
+    <string name="summary_daily_reminder">Reminder for returning to the app</string>
+    <string name="title_reminder_setting">Reminder Setting</string>
 </resources>
