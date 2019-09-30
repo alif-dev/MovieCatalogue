@@ -28,4 +28,11 @@
     <string name="title_daily_reminder">Pengingat Harian</string>
     <string name="title_release_reminder">Pengingat Rilis</string>
     <string name="title_reminder_setting">Pengaturan Pengingat</string>
+    <string name="toast_daily_reminder_cancel">Pengingat harian dibatalkan!</string>
+    <string name="toast_daily_reminder_set">Pengingat harian diaktifkan!</string>
+    <string name="toast_release_reminder_cancel">Pengingat rilis dibatalkan!</string>
+    <string name="toast_release_reminder_set">Pengingat rilis diaktifkan!</string>
+    <string name="message_daily_reminder">Aplikasi Movie Catalogue rindu sama kamu nih! Ayo cek film-film terbaru!</string>
+    <string name="content_description_notification_image">Gambar notifikasi</string>
+    <string name="notification_movie_released_message">" telah dirilis hari ini!"</string>
 </resources>

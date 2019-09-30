@@ -51,6 +51,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private FavoriteViewModel viewModel;
     private Favorite favorite;
     int[] favoriteCount = new int[1];
+    public static String FROM_NOTIFICATION_KEY = "fromNotification";
+    private boolean isFromNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.title_movie_actionbar);
         }
+
+        isFromNotification = getIntent().getBooleanExtra(FROM_NOTIFICATION_KEY, false);
 
         movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
         defineFavoriteData();
@@ -191,7 +195,13 @@ public class MovieDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                if (isFromNotification) {
+                    // if this activity is opened from notification then when up button is pressed, back to the main activity
+                    Intent intent = new Intent(MovieDetailActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    finish();
+                }
                 break;
             case R.id.action_favorite:
                 if (favoriteCount[0] > 0) {

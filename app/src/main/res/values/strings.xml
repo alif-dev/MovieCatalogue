@@ -38,4 +38,11 @@
     <string name="title_daily_reminder">Daily Reminder</string>
     <string name="summary_daily_reminder">Reminder for returning to the app</string>
     <string name="title_reminder_setting">Reminder Setting</string>
+    <string name="toast_daily_reminder_set">Daily reminder is set!</string>
+    <string name="toast_release_reminder_set">Release reminder is set!</string>
+    <string name="toast_daily_reminder_cancel">Daily reminder is cancelled!</string>
+    <string name="toast_release_reminder_cancel">Release reminder is cancelled!</string>
+    <string name="message_daily_reminder">Movie Catalogue is missing you! C\'mon check the newest released movies!</string>
+    <string name="content_description_notification_image">Notification image</string>
+    <string name="notification_movie_released_message">" has been released today!"</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.alif.moviecatalogue.view;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -9,14 +11,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
 import com.alif.moviecatalogue.R;
+import com.alif.moviecatalogue.repository.model.MovieResult;
+import com.alif.moviecatalogue.view.utility.AlarmReceiver;
+import com.alif.moviecatalogue.viewmodel.MovieViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
-    SearchView searchView;
-    private String searchCategory = "movie";
-    private Menu menu;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -24,16 +32,12 @@ public class MainActivity extends AppCompatActivity {
                     Fragment fragment;
                     switch (menuItem.getItemId()) {
                         case R.id.navigation_movies:
-                            searchCategory = "movie";
-                            //searchView.setQueryHint(getResources().getString(R.string.search_movie_hint));
                             fragment = new MoviesFragment();
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.container_layout, fragment, fragment.getClass().getSimpleName())
                                     .commit();
                             return true;
                         case R.id.navigation_tvshows:
-                            searchCategory = "tvshow";
-                            //searchView.setQueryHint(getResources().getString(R.string.search_tvshow_hint));
                             fragment = new TVShowsFragment();
                             getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.container_layout, fragment, fragment.getClass().getSimpleName())
