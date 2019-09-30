@@ -45,4 +45,5 @@
     <string name="message_daily_reminder">Movie Catalogue is missing you! C\'mon check the newest released movies!</string>
     <string name="content_description_notification_image">Notification image</string>
     <string name="notification_movie_released_message">" has been released today!"</string>
+    <string name="title_home">Home</string>
 </resources>

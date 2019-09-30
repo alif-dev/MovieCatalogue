@@ -81,8 +81,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         // set the alarm to start at approximately 8 a.m.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 57);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 5);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -124,9 +124,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         String CHANNEL_ID = "Channel_2";
         String CHANNEL_NAME = "AlarmManager channel2";
         Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(MovieDetailActivity.MOVIE_DATA_KEY, moviesReleasedToday.get(idNotif));
-        intent.putExtra(MovieDetailActivity.FROM_NOTIFICATION_KEY, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, idNotif, intent, 0);
 
         mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)

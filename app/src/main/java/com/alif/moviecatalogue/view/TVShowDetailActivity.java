@@ -203,6 +203,10 @@ public class TVShowDetailActivity extends AppCompatActivity {
                     Toast.makeText(this, getString(R.string.toast_favorite_tvshow), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.action_home:
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                break;
             case R.id.action_change_language_setting:
                 Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
                 startActivity(mIntent);
