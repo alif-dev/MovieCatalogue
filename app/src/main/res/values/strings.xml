@@ -46,4 +46,14 @@
     <string name="content_description_notification_image">Notification image</string>
     <string name="notification_movie_released_message">" has been released today!"</string>
     <string name="title_home">Home</string>
+    <string name="movie_detail_image">Movie detail image</string>
+    <string name="tv_show_detail_image">TV show detail image</string>
+    <string name="favorite_movie_image">Favorite movie image</string>
+    <string name="favorite_tv_show_image">Favorite TV show image</string>
+    <string name="movie_image">Movie image</string>
+    <string name="tv_show_image">TV show image</string>
+
+    <string name="add_widget">Add widget</string>
+    <string name="appwidget_text">FAVORITE MOVIES</string>
+    <string name="empty_text">NO DATA</string>
 </resources>

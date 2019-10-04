@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.alif.moviecatalogue.BuildConfig;
 import com.alif.moviecatalogue.repository.model.TVShowResponse;
 import com.alif.moviecatalogue.repository.model.TVShowResult;
 import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiClient;
@@ -18,7 +19,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TVShowViewModel extends ViewModel {
-    private static final String API_KEY = "13781a22a1b2140624ab4e366bec9eb8";
+    private static final String API_KEY = BuildConfig.TMDB_API_KEY;
     private static final String LANGUAGE = "en-US";
     private MutableLiveData<ArrayList<TVShowResult>> tvShows = new MutableLiveData<>();
     public String dataRetrieved = "";

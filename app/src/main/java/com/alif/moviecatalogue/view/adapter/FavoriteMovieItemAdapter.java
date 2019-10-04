@@ -25,6 +25,11 @@ import static com.alif.moviecatalogue.view.utility.DateFormatter.formatDateToLoc
 
 public class FavoriteMovieItemAdapter extends RecyclerView.Adapter<FavoriteMovieItemAdapter.ViewHolder> {
     private ArrayList<Favorite> favoriteList = new ArrayList<>();
+    private OnItemClickCallback onItemClickCallBack;
+
+    public void setOnItemClickCallBack(OnItemClickCallback onItemClickCallBack) {
+        this.onItemClickCallBack = onItemClickCallBack;
+    }
 
     public FavoriteMovieItemAdapter(Context context) {
 
@@ -55,7 +60,13 @@ public class FavoriteMovieItemAdapter extends RecyclerView.Adapter<FavoriteMovie
                 .into(holder.imgPoster);
         holder.tvTitle.setText(favorite.getTitle());
         holder.tvReleaseDate.setText(formatDateToLocal(favorite.getReleaseDate()));
-        setRatingProgressBar(holder, favorite);
+        setRatingProgressBar(holder, favorite.getRating());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickCallBack.onItemClicked(favorite);
+            }
+        });
     }
 
     @Override
@@ -63,7 +74,7 @@ public class FavoriteMovieItemAdapter extends RecyclerView.Adapter<FavoriteMovie
         return favoriteList.size();
     }
 
-    private void setRatingProgressBar(final ViewHolder holder, Favorite favorite) {
+    private void setRatingProgressBar(final ViewHolder holder, float voteAverage) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -71,25 +82,25 @@ public class FavoriteMovieItemAdapter extends RecyclerView.Adapter<FavoriteMovie
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = favorite.getRating() * 10;
+        int rating = (int) (voteAverage * 10);
         if (rating >= 0 && rating <= 20) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(red)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 20 && rating <= 40) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(orange)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 40 && rating <= 60) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(yellow)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 60 && rating <= 80) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(green)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 80 && rating <= 100) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(darkGreen)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         }
 
-        holder.tvPbRating.setText(String.format(Locale.ENGLISH, "%.1f%%", rating));
+        holder.tvPbRating.setText(String.format(Locale.ENGLISH, "%d%%", rating));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -107,5 +118,9 @@ public class FavoriteMovieItemAdapter extends RecyclerView.Adapter<FavoriteMovie
             pbRating = itemView.findViewById(R.id.pb_movie_rating);
             tvPbRating = itemView.findViewById(R.id.tv_movie_pb_rating);
         }
+    }
+
+    public interface OnItemClickCallback {
+        void onItemClicked(Favorite favorite);
     }
 }

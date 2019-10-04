@@ -1,9 +1,7 @@
 package com.alif.moviecatalogue.view;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,7 +28,7 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
     private String DAILY_REMINDER_KEY;
 
     private AlarmReceiver alarmReceiver;
-    private ArrayList<MovieResult> todayReleasedMovies;
+    public static ArrayList<MovieResult> todayReleasedMovies;
 
     private String dailyReminderMessage;
 

@@ -1,6 +1,7 @@
 package com.alif.moviecatalogue.view;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,14 @@ public class FavoriteMoviesFragment extends Fragment {
 
         favoriteMovieItemAdapter = new FavoriteMovieItemAdapter(getActivity());
         favoriteMovieItemAdapter.notifyDataSetChanged();
+        favoriteMovieItemAdapter.setOnItemClickCallBack(new FavoriteMovieItemAdapter.OnItemClickCallback() {
+            @Override
+            public void onItemClicked(Favorite favorite) {
+                Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+                intent.putExtra(MovieDetailActivity.FAVORITE_MOVIE_DATA_KEY, favorite);
+                startActivity(intent);
+            }
+        });
 
         recyclerView = view.findViewById(R.id.recyclerview_favoritemovies);
         recyclerView.setHasFixedSize(true);

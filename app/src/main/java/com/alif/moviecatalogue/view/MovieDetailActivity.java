@@ -47,6 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ConstraintLayout detailInformationLayout;
     private Menu menu;
     public static String MOVIE_DATA_KEY = "movieData";
+    public static String FAVORITE_MOVIE_DATA_KEY = "favoriteMovieData";
     private MovieResult movie;
     private String category = "movie";
     private FavoriteViewModel viewModel;
@@ -63,9 +64,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.title_movie_actionbar);
         }
 
-        movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
-        defineFavoriteData();
-
         detailInformationLayout = findViewById(R.id.movie_dtl_information_viewgroup);
         progressBar = findViewById(R.id.progressbar_dtl_movies);
         tvTitle = findViewById(R.id.tv_dtl_movie_title);
@@ -77,10 +75,60 @@ public class MovieDetailActivity extends AppCompatActivity {
         tvGenres = findViewById(R.id.tv_dtl_movie_genres_value);
         viewModel = ViewModelProviders.of(this).get(FavoriteViewModel.class);
 
-        showDetails();
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey(MOVIE_DATA_KEY)) {
+                movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
+                defineFavoriteData();
+                showMovieDetails();
+            } else if (getIntent().getExtras().containsKey(FAVORITE_MOVIE_DATA_KEY)) {
+                favorite = getIntent().getParcelableExtra(FAVORITE_MOVIE_DATA_KEY);
+                showFavoriteMovieDetails();
+            }
+        }
     }
 
-    private void showDetails() {
+    private void showFavoriteMovieDetails() {
+        // use handler to show loading before showing movie details
+        showLoading(true);
+        detailInformationLayout.setVisibility(View.INVISIBLE);
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(800);
+                    // check whether the data is already listed as favorite
+                    favoriteCount[0] = viewModel.count(favorite.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    public void run() {
+                        showLoading(false);
+                        if (favorite != null) {
+                            detailInformationLayout.setVisibility(View.VISIBLE);
+                            tvTitle.setText(favorite.getTitle());
+                            Glide.with(MovieDetailActivity.this)
+                                    .load("http://image.tmdb.org/t/p/w342" + favorite.getPosterPath())
+                                    .into(imgPoster);
+                            tvReleaseDate.setText(formatDateToLocal(favorite.getReleaseDate()));
+                            setRatingProgressBar(favorite.getRating());
+                            tvDescription.setText(favorite.getOverview());
+                            tvGenres.setText(favorite.getGenre());
+
+                            if (favoriteCount[0] > 0) {
+                                menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
+                            } else {
+                                menu.getItem(0).setIcon(R.drawable.ic_favorite_white_opacity_75);
+                            }
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void showMovieDetails() {
         // use handler to show loading before showing movie details
         showLoading(true);
         detailInformationLayout.setVisibility(View.INVISIBLE);
@@ -98,7 +146,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     public void run() {
                         showLoading(false);
-                        movie = getIntent().getParcelableExtra(MOVIE_DATA_KEY);
                         if (movie != null) {
                             detailInformationLayout.setVisibility(View.VISIBLE);
                             tvTitle.setText(movie.getOriginalTitle());
@@ -106,7 +153,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                                     .load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath())
                                     .into(imgPoster);
                             tvReleaseDate.setText(formatDateToLocal(movie.getReleaseDate()));
-                            setRatingProgressBar(movie);
+                            setRatingProgressBar(movie.getVoteAverage());
                             tvDescription.setText(movie.getOverview());
                             tvGenres.setText(convertGenreIdsToAStringOfNames(movie.getGenreIds()));
 
@@ -142,7 +189,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         favorite.setCategory(category);
     }
 
-    private void setRatingProgressBar(MovieResult movie) {
+    private void setRatingProgressBar(float voteAverage) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -150,20 +197,20 @@ public class MovieDetailActivity extends AppCompatActivity {
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = movie.getVoteAverage() * 10;
+        int rating = (int) (voteAverage * 10);
         if (rating >= 0 && rating <= 20) {
-            setRatingProgressBarAnimation(red, (int) rating);
+            setRatingProgressBarAnimation(red, rating);
         } else if (rating > 20 && rating <= 40) {
-            setRatingProgressBarAnimation(orange, (int) rating);
+            setRatingProgressBarAnimation(orange, rating);
         } else if (rating > 40 && rating <= 60) {
-            setRatingProgressBarAnimation(yellow, (int) rating);
+            setRatingProgressBarAnimation(yellow, rating);
         } else if (rating > 60 && rating <= 80) {
-            setRatingProgressBarAnimation(green, (int) rating);
+            setRatingProgressBarAnimation(green, rating);
         } else if (rating > 80 && rating <= 100) {
-            setRatingProgressBarAnimation(darkGreen, (int) rating);
+            setRatingProgressBarAnimation(darkGreen, rating);
         }
 
-        tvPbRating.setText(String.format(Locale.ENGLISH, "%.1f%%", rating));
+        tvPbRating.setText(String.format(Locale.ENGLISH, "%d%%", rating));
     }
 
     private void setRatingProgressBarAnimation(String color, int rating) {

@@ -10,17 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -30,16 +23,9 @@ import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
 import com.alif.moviecatalogue.view.ReminderPreferencesFragment;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class AlarmReceiver extends BroadcastReceiver {
@@ -70,35 +56,46 @@ public class AlarmReceiver extends BroadcastReceiver {
                     showReleaseReminderNotification(context, releasedMovies);
                     idNotif++;
                 }
+                // reset idNotif to 0 after showing notification
+                idNotif = 0;
             } else if (reminderId == ID_DAILY_REMINDER) {
-                String title = "Daily Reminder";
+                String title = context.getResources().getString(R.string.title_daily_reminder);
                 showDailyReminderNotification(context, title, message, reminderId);
             }
         }
     }
 
-    public void setReleaseReminderAlarm(Context context, ArrayList<MovieResult> moviesReleasedToday) {
-        // set the alarm to start at approximately 8 a.m.
+    public long setTime(int hourOfDay, int minute, int second) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 5);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+        return calendar.getTimeInMillis();
+    }
+
+    public void setReleaseReminderAlarm(Context context, ArrayList<MovieResult> moviesReleasedToday) {
+        // set the alarm to start at approximately 8 a.m.
+        long alarmTime = setTime(11, 1, 0);
+        long now = Calendar.getInstance().getTimeInMillis();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(EXTRA_ID, ID_RELEASE_REMINDER);
         intent.putParcelableArrayListExtra(EXTRA_RELEASED_MOVIES, moviesReleasedToday);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, 0);
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (alarmTime > now) {
+            if (alarmManager != null) {
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
+            }
         }
     }
 
     public void cancelReleaseReminderAlarm(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         pendingIntent.cancel();
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
@@ -117,7 +114,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void sendNotif(Context context, ArrayList<MovieResult> moviesReleasedToday) {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.movie_studio_icon);
+        // default notification bitmap
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.clapperboard);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder;
 
@@ -125,8 +123,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String CHANNEL_NAME = "AlarmManager channel2";
         Intent intent = new Intent(context, MovieDetailActivity.class);
         intent.putExtra(MovieDetailActivity.MOVIE_DATA_KEY, moviesReleasedToday.get(idNotif));
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, idNotif, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, idNotif, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle(moviesReleasedToday.get(idNotif).getOriginalTitle())
@@ -156,26 +153,26 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setDailyReminderAlarm(Context context, String message) {
         // set the alarm to start at approximately 7 a.m.
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.MINUTE, 0);
+        long alarmTime = setTime(7, 0, 0);
+        long now = Calendar.getInstance().getTimeInMillis();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         intent.putExtra(EXTRA_ID, ID_DAILY_REMINDER);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, 0);
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (alarmTime > now) {
+            if (alarmManager != null) {
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
+            }
         }
     }
 
     public void cancelDailyReminderAlarm(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         pendingIntent.cancel();
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
@@ -185,7 +182,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void showDailyReminderNotification(Context context, String title, String message, int notifId) {
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, ID_DAILY_REMINDER, intent, 0);
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.movie_studio_icon);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.clapperboard);
 
         String CHANNEL_ID = "Channel_1";
         String CHANNEL_NAME = "AlarmManager channel 1";

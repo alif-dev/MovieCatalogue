@@ -33,7 +33,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_dtl_movie_title"
-                app:srcCompat="@drawable/dummy_poster" />
+                app:srcCompat="@drawable/dummy_poster"
+                android:contentDescription="@string/movie_detail_image" />
 
             <ProgressBar
                 android:id="@+id/pb_dtl_tvshow_rating"
@@ -52,7 +53,9 @@
                 android:id="@+id/tv_dtl_movie_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:text="@string/dummy_title"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
@@ -104,7 +107,7 @@
                 android:layout_marginStart="8dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/dummy_rating"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold|italic"
                 app:layout_constraintStart_toEndOf="@+id/pb_dtl_tvshow_rating"
                 app:layout_constraintTop_toTopOf="@+id/pb_dtl_tvshow_rating" />

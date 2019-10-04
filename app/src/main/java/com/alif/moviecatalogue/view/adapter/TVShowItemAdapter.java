@@ -41,7 +41,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         this.onItemClickCallBack = onItemClickCallBack;
     }
 
-    private void setRatingProgressBar(final ViewHolder holder, TVShowResult tvShow) {
+    private void setRatingProgressBar(final ViewHolder holder, float voteAverage) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -49,25 +49,25 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = tvShow.getVoteAverage() * 10;
+        int rating = (int) (voteAverage * 10);
         if (rating >= 0 && rating <= 20) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(red)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 20 && rating <= 40) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(orange)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 40 && rating <= 60) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(yellow)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 60 && rating <= 80) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(green)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         } else if (rating > 80 && rating <= 100) {
             holder.pbRating.setProgressTintList(ColorStateList.valueOf(Color.parseColor(darkGreen)));
-            holder.pbRating.setProgress((int) rating);
+            holder.pbRating.setProgress(rating);
         }
 
-        holder.tvPbRating.setText(String.format(Locale.ENGLISH, "%.1f%%", rating));
+        holder.tvPbRating.setText(String.format(Locale.ENGLISH, "%d%%", rating));
     }
 
     @NonNull
@@ -85,7 +85,7 @@ public class TVShowItemAdapter extends RecyclerView.Adapter<TVShowItemAdapter.Vi
                 .into(holder.imgPoster);
         holder.tvTitle.setText(tvShow.getOriginalName());
         holder.tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
-        setRatingProgressBar(holder, tvShow);
+        setRatingProgressBar(holder, tvShow.getVoteAverage());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

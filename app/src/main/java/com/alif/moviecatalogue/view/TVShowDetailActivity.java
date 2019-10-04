@@ -45,6 +45,7 @@ public class TVShowDetailActivity extends AppCompatActivity {
     private ConstraintLayout detailInformationLayout;
     private Menu menu;
     public static String TVSHOW_DATA_KEY = "tvShowData";
+    public static String FAVORITE_TVSHOW_DATA_KEY = "favoriteTVShowData";
     private TVShowResult tvShow;
     private String category = "tvshow";
     private FavoriteViewModel viewModel;
@@ -61,9 +62,6 @@ public class TVShowDetailActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.title_tvshow_actionbar);
         }
 
-        tvShow = getIntent().getParcelableExtra(TVSHOW_DATA_KEY);
-        defineFavoriteData();
-
         detailInformationLayout = findViewById(R.id.tvshow_dtl_information_viewgroup);
         progressBar = findViewById(R.id.progressbar_dtl_tvshows);
         tvTitle = findViewById(R.id.tv_dtl_tvshow_title);
@@ -75,10 +73,59 @@ public class TVShowDetailActivity extends AppCompatActivity {
         tvGenres = findViewById(R.id.tv_dtl_tvshow_genres_value);
         viewModel = ViewModelProviders.of(this).get(FavoriteViewModel.class);
 
-        showDetails();
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey(TVSHOW_DATA_KEY)) {
+                tvShow = getIntent().getParcelableExtra(TVSHOW_DATA_KEY);
+                defineFavoriteData();
+                showTVShowDetails();
+            } else if (getIntent().getExtras().containsKey(FAVORITE_TVSHOW_DATA_KEY)) {
+                favorite = getIntent().getParcelableExtra(FAVORITE_TVSHOW_DATA_KEY);
+                showFavoriteTVShowDetails();
+            }
+        }
     }
 
-    private void showDetails() {
+    private void showFavoriteTVShowDetails() {
+        // use handler to show loading before showing tvshow details
+        showLoading(true);
+        detailInformationLayout.setVisibility(View.INVISIBLE);
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(800);
+                    favoriteCount[0] = viewModel.count(favorite.getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    public void run() {
+                        showLoading(false);
+                        detailInformationLayout.setVisibility(View.VISIBLE);
+                        if (favorite != null) {
+                            tvTitle.setText(favorite.getTitle());
+                            Glide.with(TVShowDetailActivity.this)
+                                    .load("http://image.tmdb.org/t/p/w342" + favorite.getPosterPath())
+                                    .into(imgPoster);
+                            tvReleaseDate.setText(formatDateToLocal(favorite.getReleaseDate()));
+                            setRatingProgressBar(favorite.getRating());
+                            tvDescription.setText(favorite.getOverview());
+                            tvGenres.setText(favorite.getGenre());
+
+                            if (favoriteCount[0] > 0) {
+                                menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
+                            } else {
+                                menu.getItem(0).setIcon(R.drawable.ic_favorite_white_opacity_75);
+                            }
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void showTVShowDetails() {
         // use handler to show loading before showing tvshow details
         showLoading(true);
         detailInformationLayout.setVisibility(View.INVISIBLE);
@@ -102,7 +149,7 @@ public class TVShowDetailActivity extends AppCompatActivity {
                                     .load("http://image.tmdb.org/t/p/w342" + tvShow.getPosterPath())
                                     .into(imgPoster);
                             tvReleaseDate.setText(formatDateToLocal(tvShow.getFirstAirDate()));
-                            setRatingProgressBar(tvShow);
+                            setRatingProgressBar(tvShow.getVoteAverage());
                             tvDescription.setText(tvShow.getOverview());
                             tvGenres.setText(convertGenreIdsToAStringOfNames(tvShow.getGenreIds()));
 
@@ -138,7 +185,7 @@ public class TVShowDetailActivity extends AppCompatActivity {
         favorite.setCategory(category);
     }
 
-    private void setRatingProgressBar(TVShowResult tvShow) {
+    private void setRatingProgressBar(float voteAverage) {
         // ProgressBar colors
         String red = "#FF0000";
         String orange = "#FF5722";
@@ -146,20 +193,20 @@ public class TVShowDetailActivity extends AppCompatActivity {
         String green = "#4CAF50";
         String darkGreen = "#009688";
 
-        float rating = tvShow.getVoteAverage() * 10;
+        int rating = (int) (voteAverage * 10);
         if (rating >= 0 && rating <= 20) {
-            setRatingProgressBarAnimation(red, (int) rating);
+            setRatingProgressBarAnimation(red, rating);
         } else if (rating > 20 && rating <= 40) {
-            setRatingProgressBarAnimation(orange, (int) rating);
+            setRatingProgressBarAnimation(orange, rating);
         } else if (rating > 40 && rating <= 60) {
-            setRatingProgressBarAnimation(yellow, (int) rating);
+            setRatingProgressBarAnimation(yellow, rating);
         } else if (rating > 60 && rating <= 80) {
-            setRatingProgressBarAnimation(green, (int) rating);
+            setRatingProgressBarAnimation(green, rating);
         } else if (rating > 80 && rating <= 100) {
-            setRatingProgressBarAnimation(darkGreen, (int) rating);
+            setRatingProgressBarAnimation(darkGreen, rating);
         }
 
-        tvPbRating.setText(String.format(Locale.ENGLISH, "%.1f%%", rating));
+        tvPbRating.setText(String.format(Locale.ENGLISH, "%d%%", rating));
     }
 
     private void setRatingProgressBarAnimation(String color, int rating) {
