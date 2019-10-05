@@ -85,7 +85,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarmManager != null) {
             if (now > alarmTime) {
-                // if the time when the alarm is set is past the targeted time - which is 08:00 a.m. - then the alarm will be fired the next day at 07:00 a.m.
+                // if the time when the alarm is set past the targeted time - which is 08:00 a.m. - then the alarm will be fired the next day at 07:00 a.m.
                 alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime + 86400000, AlarmManager.INTERVAL_DAY, pendingIntent);
             } else {
                 // if the time when the alarm is set is before or at the targeted time then the alarm will be fired today at 08:00 a.m.
