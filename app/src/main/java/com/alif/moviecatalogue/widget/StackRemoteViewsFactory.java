@@ -53,7 +53,7 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
         mWidgetItems.clear();
         favoriteMovieList.clear();
         if (cursor != null) {
-            Log.d("cursorstatecount", String.valueOf(cursor.getCount()));
+            Log.d("cursorcount", String.valueOf(cursor.getCount()));
             if (cursor.getCount() != 0) {
                 favoriteMovieList = convertCursorToArrayList(cursor);
 
@@ -89,7 +89,6 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public RemoteViews getViewAt(int position) {
-        Log.d(("cursorstatewidgetitems"), String.valueOf(mWidgetItems.size()));
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
         Bundle extras = new Bundle();
         Intent fillInIntent = new Intent();
@@ -97,7 +96,6 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
             rv.setEmptyView(R.id.stack_view, R.id.empty_view);
         } else {
             rv.setImageViewBitmap(R.id.imageView, mWidgetItems.get(position));
-            Log.d(("toastactionobject"), favoriteMovieList.get(0).getTitle());
             extras.putParcelable(FavoriteMoviesWidget.EXTRA_ITEM, favoriteMovieList.get(position));
             fillInIntent.putExtra(FavoriteMoviesWidget.FAVORITE_MOVIE_DATA, extras);
             rv.setOnClickFillInIntent(R.id.imageView, fillInIntent);
