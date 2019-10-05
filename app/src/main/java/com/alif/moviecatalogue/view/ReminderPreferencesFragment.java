@@ -52,7 +52,6 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
         init();
-        setState();
     }
 
     private void init() {
@@ -64,28 +63,6 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
         dailyReminderPreference = findPreference(DAILY_REMINDER_KEY);
 
         alarmReceiver = new AlarmReceiver();
-    }
-
-    private void setState() {
-        SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-
-        boolean releaseReminderIsChecked = sharedPreferences.getBoolean(RELEASE_REMINDER_KEY, false);
-        if (releaseReminderIsChecked) {
-            releaseReminderPreference.setChecked(true);
-            alarmReceiver.setReleaseReminderAlarm(Objects.requireNonNull(getActivity()), todayReleasedMovies);
-        } else {
-            releaseReminderPreference.setChecked(false);
-            alarmReceiver.cancelReleaseReminderAlarm(Objects.requireNonNull(getActivity()));
-        }
-
-        boolean dailyReminderIsChecked = sharedPreferences.getBoolean(DAILY_REMINDER_KEY, false);
-        if (dailyReminderIsChecked) {
-            dailyReminderPreference.setChecked(true);
-            alarmReceiver.setDailyReminderAlarm(Objects.requireNonNull(getActivity()), dailyReminderMessage);
-        } else {
-            dailyReminderPreference.setChecked(false);
-            alarmReceiver.cancelDailyReminderAlarm(Objects.requireNonNull(getActivity()));
-        }
     }
 
     @Override

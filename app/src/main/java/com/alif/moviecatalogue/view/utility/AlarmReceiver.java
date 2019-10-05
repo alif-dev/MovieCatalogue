@@ -13,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -76,7 +75,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setReleaseReminderAlarm(Context context, ArrayList<MovieResult> moviesReleasedToday) {
         // set the alarm to start at approximately 8 a.m.
-        long alarmTime = setTime(23, 21, 0);
+        long alarmTime = setTime(8, 0, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -149,7 +148,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setDailyReminderAlarm(Context context, String message) {
         // set the alarm to start at approximately 7 a.m.
-        long alarmTime = setTime(23, 27, 0);
+        long alarmTime = setTime(7, 0, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
