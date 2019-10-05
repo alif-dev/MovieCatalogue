@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -37,6 +38,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private int idNotif = 0;
     private int maxNotif = 3;
     private final static String GROUP_KEY_MOVIE_CATALOGUE = "group_key_movie_catalogue";
+
 
     public AlarmReceiver() {
 
@@ -74,8 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setReleaseReminderAlarm(Context context, ArrayList<MovieResult> moviesReleasedToday) {
         // set the alarm to start at approximately 8 a.m.
-        long alarmTime = setTime(8, 0, 0);
-        long now = Calendar.getInstance().getTimeInMillis();
+        long alarmTime = setTime(23, 21, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -84,13 +85,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarmManager != null) {
-            if (now > alarmTime) {
-                // if the time when the alarm is set past the targeted time - which is 08:00 a.m. - then the alarm will be fired the next day at 07:00 a.m.
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime + 86400000, AlarmManager.INTERVAL_DAY, pendingIntent);
-            } else {
-                // if the time when the alarm is set is before or at the targeted time then the alarm will be fired today at 08:00 a.m.
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
-            }
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
         }
     }
 
@@ -154,8 +149,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setDailyReminderAlarm(Context context, String message) {
         // set the alarm to start at approximately 7 a.m.
-        long alarmTime = setTime(7, 0, 0);
-        long now = Calendar.getInstance().getTimeInMillis();
+        long alarmTime = setTime(23, 27, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -164,13 +158,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarmManager != null) {
-            if (now > alarmTime) {
-                // if the time when the alarm is set past the targeted time - which is 07:00 a.m. - then the alarm will be fired the next day at 07:00 a.m.
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime + 86400000, AlarmManager.INTERVAL_DAY, pendingIntent);
-            } else {
-                // if the time when the alarm is set is before or at the targeted time then the alarm will be fired today at 07:00 a.m.
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
-            }
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
         }
     }
 

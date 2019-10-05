@@ -82,6 +82,7 @@ public class MovieViewModel extends ViewModel {
     public void getMoviesReleasedToday() {
         // get today's date
         Date now = new Date(); // new Date() will get today's date and time
+        Log.d("todayis", now.toString());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // only get the date and use this format
         String todayDate = simpleDateFormat.format(now);
 

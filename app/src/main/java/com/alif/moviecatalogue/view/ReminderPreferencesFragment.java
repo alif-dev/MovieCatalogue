@@ -28,9 +28,8 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
     private String DAILY_REMINDER_KEY;
 
     private AlarmReceiver alarmReceiver;
-    public static ArrayList<MovieResult> todayReleasedMovies;
-
     private String dailyReminderMessage;
+    private static ArrayList<MovieResult> todayReleasedMovies;
 
     private Observer<ArrayList<MovieResult>> getMovie = new Observer<ArrayList<MovieResult>>() {
         @Override
