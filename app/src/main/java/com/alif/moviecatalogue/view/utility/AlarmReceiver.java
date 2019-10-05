@@ -21,8 +21,6 @@ import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.MovieResult;
 import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
-import com.alif.moviecatalogue.view.ReminderPreferencesFragment;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,7 +74,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void setReleaseReminderAlarm(Context context, ArrayList<MovieResult> moviesReleasedToday) {
         // set the alarm to start at approximately 8 a.m.
-        long alarmTime = setTime(11, 1, 0);
+        long alarmTime = setTime(8, 0, 0);
         long now = Calendar.getInstance().getTimeInMillis();
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -85,8 +83,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         intent.putParcelableArrayListExtra(EXTRA_RELEASED_MOVIES, moviesReleasedToday);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (alarmTime > now) {
-            if (alarmManager != null) {
+        if (alarmManager != null) {
+            if (now > alarmTime) {
+                // if the time when the alarm is set is past the targeted time - which is 08:00 a.m. - then the alarm will be fired the next day.
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime + 86400000, AlarmManager.INTERVAL_DAY, pendingIntent);
+            } else {
+                // if the time when the alarm is set is before or at the targeted time then the alarm will be fired today at 08:00 a.m.
                 alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
             }
         }
@@ -114,7 +116,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void sendNotif(Context context, ArrayList<MovieResult> moviesReleasedToday) {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // default notification bitmap
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.clapperboard);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder;
@@ -162,8 +163,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         intent.putExtra(EXTRA_ID, ID_DAILY_REMINDER);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (alarmTime > now) {
-            if (alarmManager != null) {
+        if (alarmManager != null) {
+            if (now > alarmTime) {
+                // if the time when the alarm is set is past the targeted time - which is 07:00 a.m. - then the alarm will be fired the next day.
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime + 86400000, AlarmManager.INTERVAL_DAY, pendingIntent);
+            } else {
+                // if the time when the alarm is set is before or at the targeted time then the alarm will be fired today at 07:00 a.m.
                 alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
             }
         }

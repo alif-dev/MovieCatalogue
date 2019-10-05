@@ -1,13 +1,13 @@
 package com.alif.moviecatalogue.view;
 
 import android.animation.ObjectAnimator;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -222,10 +222,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void insertFavoriteMovieToDB() {
         viewModel.insert(favorite);
+        Intent updateFavoriteIntent = new Intent();
+        updateFavoriteIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        sendBroadcast(updateFavoriteIntent);
     }
 
     private void deleteFavoriteMovieFromDB() {
         viewModel.delete(favorite);
+        Intent updateFavoriteIntent = new Intent();
+        updateFavoriteIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        sendBroadcast(updateFavoriteIntent);
     }
 
     @Override

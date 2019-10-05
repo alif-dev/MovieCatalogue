@@ -1,6 +1,7 @@
 package com.alif.moviecatalogue.view;
 
 
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,7 +46,6 @@ public class FavoriteMoviesFragment extends Fragment {
     private RecyclerView recyclerView;
     private FavoriteViewModel viewModel;
     private FavoriteMovieItemAdapter favoriteMovieItemAdapter;
-
 
     public FavoriteMoviesFragment() {
         // Required empty public constructor
@@ -138,7 +138,10 @@ public class FavoriteMoviesFragment extends Fragment {
                                 + getContext().getString(R.string.toast_favorite_deleted), Toast.LENGTH_LONG).show();
 
                         // delete the favorite
-                        viewModel.delete(favorite);
+                         viewModel.delete(favorite);
+                        Intent updateFavoriteIntent = new Intent();
+                        updateFavoriteIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                        getActivity().sendBroadcast(updateFavoriteIntent);
                     }
                 });
         helper.attachToRecyclerView(recyclerView);

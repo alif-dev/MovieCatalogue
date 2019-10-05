@@ -44,5 +44,7 @@
     <string name="tv_show_image">Gambar acara TV</string>
     <string name="add_widget">Tambah widget</string>
     <string name="appwidget_text">FILM FAVORIT</string>
-    <string name="empty_text">TIDAK ADA DATA</string>
+    <string name="empty_text">TIDAK ADA DATA FILM FAVORIT</string>
+    <string name="favorite_movie_image_in_widget">Gambar clapperboard di widget</string>
+    <string name="toast_widget_open_favorite_movie">"Membuka detail "</string>
 </resources>

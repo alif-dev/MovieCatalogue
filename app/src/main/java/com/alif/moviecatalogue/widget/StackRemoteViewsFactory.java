@@ -27,7 +27,8 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     private static final String AUTHORITY = FavoriteMoviesProvider.AUTHORITY;
     private static final String TABLE_NAME = FavoriteMoviesProvider.TABLE_NAME;
-    private static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+    private ArrayList<Favorite> favoriteMovieList = new ArrayList<>();
     private Cursor cursor;
 
     StackRemoteViewsFactory(Context context) {
@@ -39,10 +40,6 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     }
 
-    private void initDb() {
-        cursor = mContext.getContentResolver().query(CONTENT_URI, null, null, null, null);
-    }
-
     @Override
     public void onDataSetChanged() {
         if (cursor != null) {
@@ -50,22 +47,29 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
         }
 
         final long identityToken = Binder.clearCallingIdentity();
-        initDb();
+        // query the database through content provider
+        cursor = mContext.getContentResolver().query(CONTENT_URI, null, null, null, null);
 
+        mWidgetItems.clear();
+        favoriteMovieList.clear();
         if (cursor != null) {
-            ArrayList<Favorite> favoriteMovieList = convertCursorToArrayList(cursor);
-            for (int i = 0; i < favoriteMovieList.size(); i++) {
-                Log.d("updatewidget", favoriteMovieList.get(i).getTitle());
-                try {
-                    Bitmap bitmap = Glide.with(mContext)
-                            .asBitmap()
-                            .load("http://image.tmdb.org/t/p/w342" + favoriteMovieList.get(i).getPosterPath())
-                            .submit(250, 250)
-                            .get();
+            Log.d("cursorstatecount", String.valueOf(cursor.getCount()));
+            if (cursor.getCount() != 0) {
+                favoriteMovieList = convertCursorToArrayList(cursor);
 
-                    mWidgetItems.add(bitmap);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                for (int i = 0; i < favoriteMovieList.size(); i++) {
+                    Log.d("updatewidget", favoriteMovieList.get(i).getTitle());
+                    try {
+                        Bitmap bitmap = Glide.with(mContext)
+                                .asBitmap()
+                                .load("http://image.tmdb.org/t/p/w342" + favoriteMovieList.get(i).getPosterPath())
+                                .submit(250, 250)
+                                .get();
+
+                        mWidgetItems.add(bitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -85,14 +89,19 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public RemoteViews getViewAt(int position) {
+        Log.d(("cursorstatewidgetitems"), String.valueOf(mWidgetItems.size()));
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
-        rv.setImageViewBitmap(R.id.imageView, mWidgetItems.get(position));
-
         Bundle extras = new Bundle();
-        extras.putInt(ImageBannerWidget.EXTRA_ITEM, position);
         Intent fillInIntent = new Intent();
-        fillInIntent.putExtras(extras);
-        rv.setOnClickFillInIntent(R.id.imageView, fillInIntent);
+        if (mWidgetItems.isEmpty()) {
+            rv.setEmptyView(R.id.stack_view, R.id.empty_view);
+        } else {
+            rv.setImageViewBitmap(R.id.imageView, mWidgetItems.get(position));
+            Log.d(("toastactionobject"), favoriteMovieList.get(0).getTitle());
+            extras.putParcelable(FavoriteMoviesWidget.EXTRA_ITEM, favoriteMovieList.get(position));
+            fillInIntent.putExtra(FavoriteMoviesWidget.FAVORITE_MOVIE_DATA, extras);
+            rv.setOnClickFillInIntent(R.id.imageView, fillInIntent);
+        }
         return rv;
     }
 

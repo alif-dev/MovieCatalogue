@@ -55,5 +55,7 @@
 
     <string name="add_widget">Add widget</string>
     <string name="appwidget_text">FAVORITE MOVIES</string>
-    <string name="empty_text">NO DATA</string>
+    <string name="empty_text">NO FAVORITE MOVIES DATA</string>
+    <string name="favorite_movie_image_in_widget">Clapperboard image in widget</string>
+    <string name="toast_widget_open_favorite_movie">"Opening details of "</string>
 </resources>

@@ -11,5 +11,6 @@
         android:layout_height="300dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/dummy_poster" />
+        tools:srcCompat="@drawable/dummy_poster"
+        android:contentDescription="@string/favorite_movie_image_in_widget" />
 </LinearLayout>

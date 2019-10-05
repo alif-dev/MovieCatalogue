@@ -17,8 +17,8 @@ import com.alif.moviecatalogue.repository.model.room.FavoriteRoomDatabase;
 public class FavoriteMoviesProvider extends ContentProvider {
     public static final String AUTHORITY = "com.alif.moviecatalogue";
     public static final String TABLE_NAME = "favorite";
-    private static final int FAVORITE = 1;
-    private static final int FAVORITE_ID = 2;
+    public static final int FAVORITE = 1;
+    public static final int FAVORITE_ID = 2;
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     // uri example
     // public static final Uri URI_FAVORITE = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
@@ -71,7 +71,20 @@ public class FavoriteMoviesProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        switch (URI_MATCHER.match(uri)) {
+            case FAVORITE:
+                throw new IllegalArgumentException("Invalid URI, cannot update without ID" + uri);
+            case FAVORITE_ID:
+                final Context context = getContext();
+                if (context == null) {
+                    return 0;
+                }
+                final int count = FavoriteRoomDatabase.getDatabase(context).favoriteDao().deleteById(ContentUris.parseId(uri));
+                context.getContentResolver().notifyChange(uri, null);
+                return count;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
     }
 
     @Override

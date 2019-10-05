@@ -7,31 +7,34 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.alif.moviecatalogue.R;
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
+import com.alif.moviecatalogue.view.MovieDetailActivity;
 
 /**
  * Implementation of App Widget functionality.
  */
-public class ImageBannerWidget extends AppWidgetProvider {
+public class FavoriteMoviesWidget extends AppWidgetProvider {
 
     private static final String TOAST_ACTION = "com.alif.moviecatalogue.TOAST_ACTION";
     public static final String EXTRA_ITEM = "com.alif.moviecatalogue.EXTRA_ITEM";
+    public static final String FAVORITE_MOVIE_DATA = "com.alif.moviecatalogue.FAVORITE_MOVIE_DATA";
 
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         Intent intent = new Intent(context, StackWidgetService.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.image_banner_widget);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.favorite_movies_widget);
         views.setRemoteAdapter(R.id.stack_view, intent);
         views.setEmptyView(R.id.stack_view, R.id.empty_view);
 
-        Intent toastIntent = new Intent(context, ImageBannerWidget.class);
-        toastIntent.setAction(ImageBannerWidget.TOAST_ACTION);
+        Intent toastIntent = new Intent(context, FavoriteMoviesWidget.class);
+        toastIntent.setAction(FavoriteMoviesWidget.TOAST_ACTION);
         toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -45,8 +48,22 @@ public class ImageBannerWidget extends AppWidgetProvider {
         super.onReceive(context, intent);
         if (intent.getAction() != null) {
             if (intent.getAction().equals(TOAST_ACTION)) {
-                int viewIndex = intent.getIntExtra(EXTRA_ITEM, 0);
-                Toast.makeText(context, "Touched view " + viewIndex, Toast.LENGTH_SHORT).show();
+                Bundle bundleExtra = intent.getBundleExtra(FAVORITE_MOVIE_DATA);
+                if (bundleExtra != null) {
+                    Favorite favoriteMovie = bundleExtra.getParcelable(EXTRA_ITEM);
+                    if (favoriteMovie != null) {
+                        Toast.makeText(context, context.getString(R.string.toast_widget_open_favorite_movie) + favoriteMovie.getTitle(), Toast.LENGTH_SHORT).show();
+                        Intent detailIntent = new Intent(context, MovieDetailActivity.class);
+                        detailIntent.putExtra(MovieDetailActivity.FAVORITE_MOVIE_DATA_KEY, favoriteMovie);
+                        detailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(detailIntent);
+                    }
+                }
+            } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                ComponentName favoriteWidget = new ComponentName(context, FavoriteMoviesWidget.class);
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(favoriteWidget);
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.stack_view);
             }
         }
     }

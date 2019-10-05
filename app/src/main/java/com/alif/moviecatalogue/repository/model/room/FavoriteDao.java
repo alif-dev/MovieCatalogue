@@ -10,7 +10,6 @@ import androidx.room.Query;
 
 import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -35,4 +34,7 @@ public interface FavoriteDao {
 
     @Query("SELECT * FROM favorite WHERE id = :id")
     Cursor selectById(long id);
+
+    @Query("DELETE FROM favorite WHERE id = :id")
+    int deleteById(long id);
 }
