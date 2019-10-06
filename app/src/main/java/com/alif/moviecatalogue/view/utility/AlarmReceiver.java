@@ -95,7 +95,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                         }
                         // reset idNotif to 0 after showing notification
                         idNotif = 0;
-
                     }
                 }
             }
