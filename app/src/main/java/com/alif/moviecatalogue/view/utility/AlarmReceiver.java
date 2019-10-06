@@ -30,7 +30,6 @@ import java.util.Calendar;
 public class AlarmReceiver extends BroadcastReceiver {
     public static final String EXTRA_MESSAGE = "message";
     public static final String EXTRA_ID = "alarmId";
-    public static final String EXTRA_RELEASED_MOVIES = "released_movies";
 
     private final int ID_DAILY_REMINDER = 991;
     private final int ID_RELEASE_REMINDER = 992;
