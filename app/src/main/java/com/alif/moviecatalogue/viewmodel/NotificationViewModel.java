@@ -21,7 +21,7 @@ public class NotificationViewModel {
 
     public static ArrayList<MovieResult> getMoviesReleasedToday() {
         String API_KEY = BuildConfig.TMDB_API_KEY;
-        
+
         // get today's date
         Date now = new Date(); // new Date() will get today's date and time
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // only get the date and use this format
