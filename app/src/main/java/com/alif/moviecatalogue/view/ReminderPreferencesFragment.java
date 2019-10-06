@@ -29,7 +29,7 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
 
     private AlarmReceiver alarmReceiver;
     private String dailyReminderMessage;
-    private static ArrayList<MovieResult> todayReleasedMovies;
+    public static ArrayList<MovieResult> todayReleasedMovies;
 
     private Observer<ArrayList<MovieResult>> getMovie = new Observer<ArrayList<MovieResult>>() {
         @Override
@@ -41,11 +41,16 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
     };
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         MovieViewModel movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         movieViewModel.getMovies().observe(this, getMovie);
         movieViewModel.getMoviesReleasedToday();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -85,7 +90,7 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
             releaseReminderPreference.setChecked(isChecked);
             if (isChecked) {
                 // activate notification for release reminder
-                alarmReceiver.setReleaseReminderAlarm(Objects.requireNonNull(getActivity()), todayReleasedMovies);
+                alarmReceiver.setReleaseReminderAlarm(Objects.requireNonNull(getActivity()));
                 // show release reminder toast
                 Toast.makeText(getActivity(), R.string.toast_release_reminder_set, Toast.LENGTH_SHORT).show();
             } else {

@@ -19,8 +19,10 @@ import androidx.core.content.ContextCompat;
 
 import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.MovieResult;
+import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
+import com.alif.moviecatalogue.view.ReminderPreferencesFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,13 +52,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         int reminderId = intent.getIntExtra(EXTRA_ID, 0);
         if (reminderId != 0) {
             if (reminderId == ID_RELEASE_REMINDER) {
+                ReminderPreferencesFragment reminderPreferencesFragment = new ReminderPreferencesFragment();
+                ArrayList<MovieResult> todayReleasedMovies = reminderPreferencesFragment.todayReleasedMovies;
                 // show 3 of today's released movies by calling notification 3 times
-                for (int i = 0; i < maxNotif; i++) {
-                    showReleaseReminderNotification(context, releasedMovies);
-                    idNotif++;
+                if (todayReleasedMovies != null) {
+                    for (int i = 0; i < maxNotif; i++) {
+
+                        //showReleaseReminderNotification(context, releasedMovies);
+                        showReleaseReminderNotification(context, todayReleasedMovies);
+                        idNotif++;
+                    }
+                    // reset idNotif to 0 after showing notification
+                    idNotif = 0;
                 }
-                // reset idNotif to 0 after showing notification
-                idNotif = 0;
             } else if (reminderId == ID_DAILY_REMINDER) {
                 String title = context.getResources().getString(R.string.title_daily_reminder);
                 showDailyReminderNotification(context, title, message, reminderId);
@@ -73,14 +81,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         return calendar.getTimeInMillis();
     }
 
-    public void setReleaseReminderAlarm(Context context, ArrayList<MovieResult> moviesReleasedToday) {
+    public void setReleaseReminderAlarm(Context context) {
         // set the alarm to start at approximately 8 a.m.
         long alarmTime = setTime(8, 0, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(EXTRA_ID, ID_RELEASE_REMINDER);
-        intent.putParcelableArrayListExtra(EXTRA_RELEASED_MOVIES, moviesReleasedToday);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (alarmManager != null) {
