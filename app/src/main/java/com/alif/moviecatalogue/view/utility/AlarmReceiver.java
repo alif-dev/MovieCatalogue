@@ -48,7 +48,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String message = intent.getStringExtra(EXTRA_MESSAGE);
-        ArrayList<MovieResult> releasedMovies = intent.getParcelableArrayListExtra(EXTRA_RELEASED_MOVIES);
         int reminderId = intent.getIntExtra(EXTRA_ID, 0);
         if (reminderId != 0) {
             if (reminderId == ID_RELEASE_REMINDER) {
@@ -57,8 +56,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 // show 3 of today's released movies by calling notification 3 times
                 if (todayReleasedMovies != null) {
                     for (int i = 0; i < maxNotif; i++) {
-
-                        //showReleaseReminderNotification(context, releasedMovies);
                         showReleaseReminderNotification(context, todayReleasedMovies);
                         idNotif++;
                     }
