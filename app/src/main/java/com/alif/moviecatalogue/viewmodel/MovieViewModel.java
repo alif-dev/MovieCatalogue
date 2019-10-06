@@ -78,30 +78,4 @@ public class MovieViewModel extends ViewModel {
             }
         });
     }
-
-    public void getMoviesReleasedToday() {
-        // get today's date
-        Date now = new Date(); // new Date() will get today's date and time
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // only get the date and use this format
-        String todayDate = simpleDateFormat.format(now);
-
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<MovieResponse> call = apiService.getMoviesReleasedToday(API_KEY, todayDate, todayDate);
-
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        movies.postValue(response.body().getMovieResults());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable error) {
-                Log.d("onReleaseTodayFailure", error.getMessage());
-            }
-        });
-    }
 }

@@ -5,17 +5,12 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.repository.model.MovieResult;
 import com.alif.moviecatalogue.view.utility.AlarmReceiver;
-import com.alif.moviecatalogue.viewmodel.MovieViewModel;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class ReminderPreferencesFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -27,23 +22,10 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
 
     private AlarmReceiver alarmReceiver;
     private String dailyReminderMessage;
-    public static ArrayList<MovieResult> todayReleasedMovies;
-
-    private Observer<ArrayList<MovieResult>> getMovie = new Observer<ArrayList<MovieResult>>() {
-        @Override
-        public void onChanged(ArrayList<MovieResult> movies) {
-            if (movies != null) {
-                todayReleasedMovies = movies;
-            }
-        }
-    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MovieViewModel movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        movieViewModel.getMovies().observe(this, getMovie);
-        movieViewModel.getMoviesReleasedToday();
     }
 
     @Override

@@ -21,7 +21,7 @@ import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.MovieResult;
 import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
-import com.alif.moviecatalogue.view.ReminderPreferencesFragment;
+import com.alif.moviecatalogue.viewmodel.NotificationViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,17 +50,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         int reminderId = intent.getIntExtra(EXTRA_ID, 0);
         if (reminderId != 0) {
             if (reminderId == ID_RELEASE_REMINDER) {
-                ReminderPreferencesFragment reminderPreferencesFragment = new ReminderPreferencesFragment();
-                ArrayList<MovieResult> todayReleasedMovies = reminderPreferencesFragment.todayReleasedMovies;
+                // get today's released movies from NotificationViewModel
+                ArrayList<MovieResult> todayReleasedMovies = NotificationViewModel.getMoviesReleasedToday();
                 // show 3 of today's released movies by calling notification 3 times
-                if (todayReleasedMovies != null) {
-                    for (int i = 0; i < maxNotif; i++) {
-                        showReleaseReminderNotification(context, todayReleasedMovies);
-                        idNotif++;
-                    }
-                    // reset idNotif to 0 after showing notification
-                    idNotif = 0;
+                for (int i = 0; i < maxNotif; i++) {
+                    showReleaseReminderNotification(context, todayReleasedMovies);
+                    idNotif++;
                 }
+                // reset idNotif to 0 after showing notification
+                idNotif = 0;
             } else if (reminderId == ID_DAILY_REMINDER) {
                 String title = context.getResources().getString(R.string.title_daily_reminder);
                 showDailyReminderNotification(context, title, message, reminderId);
