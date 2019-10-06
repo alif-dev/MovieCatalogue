@@ -12,10 +12,7 @@ import com.alif.moviecatalogue.repository.model.MovieResult;
 import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiClient;
 import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiInterface;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;

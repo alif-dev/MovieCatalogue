@@ -13,18 +13,29 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import com.alif.moviecatalogue.BuildConfig;
 import com.alif.moviecatalogue.R;
+import com.alif.moviecatalogue.repository.model.MovieResponse;
 import com.alif.moviecatalogue.repository.model.MovieResult;
+import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiClient;
+import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiInterface;
 import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
-import com.alif.moviecatalogue.viewmodel.NotificationViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class AlarmReceiver extends BroadcastReceiver {
@@ -38,7 +49,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     private int maxNotif = 3;
     private final static String GROUP_KEY_MOVIE_CATALOGUE = "group_key_movie_catalogue";
 
-
     public AlarmReceiver() {
 
     }
@@ -49,20 +59,52 @@ public class AlarmReceiver extends BroadcastReceiver {
         int reminderId = intent.getIntExtra(EXTRA_ID, 0);
         if (reminderId != 0) {
             if (reminderId == ID_RELEASE_REMINDER) {
-                // get today's released movies from NotificationViewModel
-                ArrayList<MovieResult> todayReleasedMovies = NotificationViewModel.getMoviesReleasedToday();
-                // show 3 of today's released movies by calling notification 3 times
-                for (int i = 0; i < maxNotif; i++) {
-                    showReleaseReminderNotification(context, todayReleasedMovies);
-                    idNotif++;
-                }
-                // reset idNotif to 0 after showing notification
-                idNotif = 0;
+                showNotificationTodayReleasedMovies(context);
             } else if (reminderId == ID_DAILY_REMINDER) {
                 String title = context.getResources().getString(R.string.title_daily_reminder);
                 showDailyReminderNotification(context, title, message, reminderId);
             }
         }
+    }
+
+    public void showNotificationTodayReleasedMovies(final Context context) {
+        String API_KEY = BuildConfig.TMDB_API_KEY;
+        final ArrayList<MovieResult> todayReleasedMovies = new ArrayList<>();
+
+        // get today's date
+        Date now = new Date(); // new Date() will get today's date and time
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // only get the date and use this format
+        final String todayDate = simpleDateFormat.format(now);
+
+        // get today's released movies using retrofit
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        Call<MovieResponse> call = apiService.getMoviesReleasedToday(API_KEY, todayDate, todayDate);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        // contain all todayReleasedMovies data in an ArrayList
+                        todayReleasedMovies.addAll(response.body().getMovieResults());
+                        // show 3 of today's released movies by calling notification 3 times
+                        for (int i = 0; i < maxNotif; i++) {
+                            Log.d("todayreleasedmovies", todayReleasedMovies.get(i).getOriginalTitle());
+                            showReleaseReminderNotification(context, todayReleasedMovies);
+                            idNotif++;
+                        }
+                        // reset idNotif to 0 after showing notification
+                        idNotif = 0;
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     public long setTime(int hourOfDay, int minute, int second) {
