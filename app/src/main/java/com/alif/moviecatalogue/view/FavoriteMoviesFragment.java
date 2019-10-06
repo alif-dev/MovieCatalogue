@@ -134,11 +134,12 @@ public class FavoriteMoviesFragment extends Fragment {
                                          int direction) {
                         int position = viewHolder.getAdapterPosition();
                         Favorite favorite = favoriteMovieItemAdapter.getFavoriteAtPosition(position);
-                        Toast.makeText(getActivity(),favorite.getTitle() + " "
+                        Toast.makeText(getActivity(), favorite.getTitle() + " "
                                 + getContext().getString(R.string.toast_favorite_deleted), Toast.LENGTH_LONG).show();
 
                         // delete the favorite
-                         viewModel.delete(favorite);
+                        viewModel.delete(favorite);
+                        // send broadcast intent to update widget
                         Intent updateFavoriteIntent = new Intent();
                         updateFavoriteIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
                         getActivity().sendBroadcast(updateFavoriteIntent);

@@ -222,6 +222,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void insertFavoriteMovieToDB() {
         viewModel.insert(favorite);
+        // send broadcast intent to update widget
         Intent updateFavoriteIntent = new Intent();
         updateFavoriteIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         sendBroadcast(updateFavoriteIntent);
@@ -229,6 +230,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void deleteFavoriteMovieFromDB() {
         viewModel.delete(favorite);
+        // send broadcast intent to update widget
         Intent updateFavoriteIntent = new Intent();
         updateFavoriteIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         sendBroadcast(updateFavoriteIntent);
