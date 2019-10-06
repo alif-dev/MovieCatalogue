@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat;
 
 import com.alif.moviecatalogue.R;
 import com.alif.moviecatalogue.repository.model.MovieResult;
-import com.alif.moviecatalogue.repository.model.room.entity.Favorite;
 import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
 import com.alif.moviecatalogue.view.ReminderPreferencesFragment;
