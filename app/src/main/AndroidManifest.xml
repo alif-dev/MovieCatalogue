@@ -29,7 +29,11 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".view.utility.AlarmReceiver"
+            android:name=".view.utility.DailyReminderAlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".view.utility.ReleaseReminderAlarmReceiver"
             android:enabled="true"
             android:exported="true" />
         <provider

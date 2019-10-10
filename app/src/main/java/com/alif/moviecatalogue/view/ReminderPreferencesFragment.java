@@ -4,14 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
 import com.alif.moviecatalogue.R;
-import com.alif.moviecatalogue.view.utility.AlarmReceiver;
-
-import java.util.Objects;
+import com.alif.moviecatalogue.view.utility.DailyReminderAlarmReceiver;
+import com.alif.moviecatalogue.view.utility.ReleaseReminderAlarmReceiver;
 
 public class ReminderPreferencesFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     private SwitchPreference releaseReminderPreference;
@@ -20,13 +18,8 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
     private String RELEASE_REMINDER_KEY;
     private String DAILY_REMINDER_KEY;
 
-    private AlarmReceiver alarmReceiver;
-    private String dailyReminderMessage;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private DailyReminderAlarmReceiver dailyAlarmReceiver;
+    private ReleaseReminderAlarmReceiver releaseAlarmReceiver;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -37,12 +30,12 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
     private void init() {
         RELEASE_REMINDER_KEY = getString(R.string.key_release_reminder);
         DAILY_REMINDER_KEY = getString(R.string.key_daily_reminder);
-        dailyReminderMessage = getString(R.string.message_daily_reminder);
 
         releaseReminderPreference = findPreference(RELEASE_REMINDER_KEY);
         dailyReminderPreference = findPreference(DAILY_REMINDER_KEY);
 
-        alarmReceiver = new AlarmReceiver();
+        dailyAlarmReceiver = new DailyReminderAlarmReceiver();
+        releaseAlarmReceiver = new ReleaseReminderAlarmReceiver();
     }
 
     @Override
@@ -65,12 +58,12 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
             releaseReminderPreference.setChecked(isChecked);
             if (isChecked) {
                 // activate notification for release reminder
-                alarmReceiver.setReleaseReminderAlarm(Objects.requireNonNull(getActivity()));
+                releaseAlarmReceiver.setReleaseReminderAlarm(getActivity());
                 // show release reminder toast
                 Toast.makeText(getActivity(), R.string.toast_release_reminder_set, Toast.LENGTH_SHORT).show();
             } else {
                 // inactivate notification for release reminder
-                alarmReceiver.cancelReleaseReminderAlarm(Objects.requireNonNull(getActivity()));
+                releaseAlarmReceiver.cancelReleaseReminderAlarm(getActivity());
                 // show cancel release reminder toast
                 Toast.makeText(getActivity(), R.string.toast_release_reminder_cancel, Toast.LENGTH_SHORT).show();
             }
@@ -82,12 +75,12 @@ public class ReminderPreferencesFragment extends PreferenceFragmentCompat implem
             dailyReminderPreference.setChecked(isChecked);
             if (isChecked) {
                 // activate notification for daily reminder
-                alarmReceiver.setDailyReminderAlarm(Objects.requireNonNull(getActivity()), dailyReminderMessage);
+                dailyAlarmReceiver.setDailyReminderAlarm(getActivity());
                 // show daily reminder toast
                 Toast.makeText(getActivity(), R.string.toast_daily_reminder_set, Toast.LENGTH_SHORT).show();
             } else {
                 // inactivate notification for daily reminder
-                alarmReceiver.cancelDailyReminderAlarm(Objects.requireNonNull(getActivity()));
+                dailyAlarmReceiver.cancelDailyReminderAlarm(getActivity());
                 // show cancel daily release reminder toast
                 Toast.makeText(getActivity(), R.string.toast_daily_reminder_cancel, Toast.LENGTH_SHORT).show();
             }

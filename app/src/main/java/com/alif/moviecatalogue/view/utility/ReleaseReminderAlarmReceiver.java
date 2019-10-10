@@ -16,7 +16,6 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 import com.alif.moviecatalogue.BuildConfig;
 import com.alif.moviecatalogue.R;
@@ -24,7 +23,6 @@ import com.alif.moviecatalogue.repository.model.MovieResponse;
 import com.alif.moviecatalogue.repository.model.MovieResult;
 import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiClient;
 import com.alif.moviecatalogue.repository.remotedatasource.retrofit.ApiInterface;
-import com.alif.moviecatalogue.view.MainActivity;
 import com.alif.moviecatalogue.view.MovieDetailActivity;
 
 import java.text.SimpleDateFormat;
@@ -38,36 +36,28 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class AlarmReceiver extends BroadcastReceiver {
-    public static final String EXTRA_MESSAGE = "message";
-    public static final String EXTRA_ID = "alarmId";
-
-    private final int ID_DAILY_REMINDER = 991;
-    private final int ID_RELEASE_REMINDER = 992;
+public class ReleaseReminderAlarmReceiver extends BroadcastReceiver {
+    public static final String EXTRA_ID = "releaseReminderAlarmId";
+    private final int ID_RELEASE_REMINDER = 990;
 
     private int idNotif = 0;
     private int maxNotif = 3;
     private final static String GROUP_KEY_MOVIE_CATALOGUE = "group_key_movie_catalogue";
 
-    public AlarmReceiver() {
+
+    public ReleaseReminderAlarmReceiver() {
 
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String message = intent.getStringExtra(EXTRA_MESSAGE);
         int reminderId = intent.getIntExtra(EXTRA_ID, 0);
-        if (reminderId != 0) {
-            if (reminderId == ID_RELEASE_REMINDER) {
-                showNotificationTodayReleasedMovies(context);
-            } else if (reminderId == ID_DAILY_REMINDER) {
-                String title = context.getResources().getString(R.string.title_daily_reminder);
-                showDailyReminderNotification(context, title, message, reminderId);
-            }
+        if (reminderId == ID_RELEASE_REMINDER) {
+            getTodayReleasedMoviesAndShowNotification(context);
         }
     }
 
-    public void showNotificationTodayReleasedMovies(final Context context) {
+    public void getTodayReleasedMoviesAndShowNotification(final Context context) {
         String API_KEY = BuildConfig.TMDB_API_KEY;
         final ArrayList<MovieResult> todayReleasedMovies = new ArrayList<>();
 
@@ -88,20 +78,19 @@ public class AlarmReceiver extends BroadcastReceiver {
                         // contain all todayReleasedMovies data in an ArrayList
                         todayReleasedMovies.addAll(response.body().getMovieResults());
                         // show 3 of today's released movies by calling notification 3 times
+                        idNotif = 0;
                         for (int i = 0; i < maxNotif; i++) {
                             Log.d("todayreleasedmovies", todayReleasedMovies.get(i).getOriginalTitle());
                             showReleaseReminderNotification(context, todayReleasedMovies);
                             idNotif++;
                         }
-                        // reset idNotif to 0 after showing notification
-                        idNotif = 0;
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-
+            public void onFailure(Call<MovieResponse> call, Throwable error) {
+                Log.d("onReleaseMoviesFailure", error.getMessage());
             }
         });
     }
@@ -120,7 +109,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         long alarmTime = setTime(8, 0, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
+        Intent intent = new Intent(context, ReleaseReminderAlarmReceiver.class);
         intent.putExtra(EXTRA_ID, ID_RELEASE_REMINDER);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -131,13 +120,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public void cancelReleaseReminderAlarm(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
+        Intent intent = new Intent(context, ReleaseReminderAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_RELEASE_REMINDER, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         pendingIntent.cancel();
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
-            // reset releaseReminder idNotif to 0
-            idNotif = 0;
         }
     }
 
@@ -158,6 +145,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String CHANNEL_ID = "Channel_2";
         String CHANNEL_NAME = "AlarmManager channel2";
         Intent intent = new Intent(context, MovieDetailActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(MovieDetailActivity.MOVIE_DATA_KEY, moviesReleasedToday.get(idNotif));
         PendingIntent pendingIntent = PendingIntent.getActivity(context, idNotif, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -184,67 +172,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         Notification notification = mBuilder.build();
         if (mNotificationManager != null) {
             mNotificationManager.notify(idNotif, notification);
-        }
-    }
-
-    public void setDailyReminderAlarm(Context context, String message) {
-        // set the alarm to start at approximately 7 a.m.
-        long alarmTime = setTime(7, 0, 0);
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
-        intent.putExtra(EXTRA_ID, ID_DAILY_REMINDER);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY, pendingIntent);
-        }
-    }
-
-    public void cancelDailyReminderAlarm(Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_DAILY_REMINDER, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        pendingIntent.cancel();
-        if (alarmManager != null) {
-            alarmManager.cancel(pendingIntent);
-        }
-    }
-
-    private void showDailyReminderNotification(Context context, String title, String message, int notifId) {
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, ID_DAILY_REMINDER, intent, 0);
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.clapperboard);
-
-        String CHANNEL_ID = "Channel_1";
-        String CHANNEL_NAME = "AlarmManager channel 1";
-        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_movie_black_24dp)
-                .setLargeIcon(largeIcon)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setContentIntent(pendingIntent)
-                .setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                .setSound(alarmSound)
-                .setAutoCancel(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channel.enableVibration(true);
-            channel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000});
-            builder.setChannelId(CHANNEL_ID);
-            if (notificationManagerCompat != null) {
-                notificationManagerCompat.createNotificationChannel(channel);
-            }
-        }
-        Notification notification = builder.build();
-        if (notificationManagerCompat != null) {
-            notificationManagerCompat.notify(notifId, notification);
         }
     }
 }
