@@ -252,11 +252,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             case R.id.action_favorite:
                 if (favoriteCount[0] > 0) {
                     deleteFavoriteMovieFromDB();
+                    // the favorite movie data has been deleted from database so the favoriteCount must be set to 0
                     favoriteCount[0] = 0;
                     menu.getItem(0).setIcon(R.drawable.ic_favorite_white_opacity_75);
                     Toast.makeText(this, getString(R.string.toast_unfavorite_movie), Toast.LENGTH_SHORT).show();
                 } else {
                     insertFavoriteMovieToDB();
+                    // the favorite movie data has been inserted to database so the favoriteCount must be set to 1
                     favoriteCount[0] = 1;
                     menu.getItem(0).setIcon(R.drawable.ic_favorite_red);
                     Toast.makeText(this, getString(R.string.toast_favorite_movie), Toast.LENGTH_SHORT).show();
